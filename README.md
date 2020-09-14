@@ -32,5 +32,5 @@ Slither.io-like game with power ups, multiple levels.
 
 ## Task List
 
-- [] Create project
+- [x] Create project
 - [] Add SignalR or Web Sockets
