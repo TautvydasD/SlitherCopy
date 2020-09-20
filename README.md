@@ -22,7 +22,7 @@ Slither.io-like game with power ups, multiple levels.
 
 * Tautvydas Dikšas IFF-7/13
 * Aistis Norkaitis IFF-7/11
-* Gediminas Aušra IFF-7/
+* Gediminas Aušra IFF-7/11
 
 ## Sources
 
