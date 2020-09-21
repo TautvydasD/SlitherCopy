@@ -28,7 +28,7 @@ Slither.io-like game with power ups, multiple levels.
 
 [Dotnet copy slither with web sockets](https://github.com/nightwolf93/SlitherNET)
 [asp.net tutorial with signalR](https://docs.microsoft.com/lt-lt/aspnet/core/tutorials/signalr?tabs=visual-studio&view=aspnetcore-3.1)
-
+[SignalR ASP.NET slither.io copy](https://github.com/fleiser/signalr-snake) 
 
 ## Task List
 
