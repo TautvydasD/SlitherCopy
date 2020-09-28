@@ -36,6 +36,8 @@ Slither.io-like game with power ups, multiple levels.
 
 [SignalR ASP.NET slither.io copy](https://github.com/fleiser/signalr-snake) 
 
+[Tic Tac Toe Blazor example](https://exceptionnotfound.net/using-blazor-webassembly-and-csharp-to-play-tic-tac-toe-in-dotnet-core/)
+
 ## Task List
 
 - [x] Create project
