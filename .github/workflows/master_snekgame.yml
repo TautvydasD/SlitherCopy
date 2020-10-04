@@ -31,5 +31,5 @@ jobs:
       with:
         app-name: 'snekgame'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_c71195533b514cf5b2141289c070301f }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_486d68b2c2164d61aa9dd522f071fc77 }}
         package: ${{env.DOTNET_ROOT}}/myapp 
