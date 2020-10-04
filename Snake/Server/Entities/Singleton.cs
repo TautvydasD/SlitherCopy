@@ -19,7 +19,8 @@ namespace Snake.Server.Entities
 
         public bool CreateLobby()
         {
-            Lobby newLobby = new Lobby(1, )
+            return false;
+            //Lobby newLobby = new Lobby(1, );
         }
 
         public static Singleton GetInstance()
