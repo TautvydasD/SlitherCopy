@@ -26,7 +26,7 @@ namespace Snake.Server
             services.AddSignalR();
             services.AddControllersWithViews();
             services.AddRazorPages();
-            services.AddSignalR().AddAzureSignalR();
+            //services.AddSignalR().AddAzureSignalR();
             services.AddResponseCompression(opts =>
             {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
