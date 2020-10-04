@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 
-namespace Snake.Server
+namespace Snek.Server
 {
     public class Startup
     {

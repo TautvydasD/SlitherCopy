@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Client\Snake.Client.csproj" />
-    <ProjectReference Include="..\Shared\Snake.Shared.csproj" />
+    <ProjectReference Include="..\Client\Snek.Client.csproj" />
+    <ProjectReference Include="..\Shared\Snek.Shared.csproj" />
   </ItemGroup>
 
 

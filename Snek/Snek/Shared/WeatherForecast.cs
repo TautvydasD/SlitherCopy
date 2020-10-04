@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Snake.Shared
+namespace Snek.Shared
 {
     public class WeatherForecast
     {
