@@ -39,7 +39,10 @@ Slither.io-like game with power ups, multiple levels.
 
 [Tic Tac Toe Blazor example](https://exceptionnotfound.net/using-blazor-webassembly-and-csharp-to-play-tic-tac-toe-in-dotnet-core/)
 
+[Huge Blazor examples repo](https://github.com/Lupusa87/LupusaBlazorDemos)
+
 ## Task List
 
 - [x] Create project
-- [ ] Add SignalR or Web Sockets
+- [x] Add SignalR or Web Sockets
+- [ ] Create Snake game
