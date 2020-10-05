@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Snek.Shared.Entities
 {
-    class User
+    public class User
     {
         public string Username { get; private set; }
     }

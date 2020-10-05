@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Snek.Shared.Entities
 {
-    class Lobby
+    public class Lobby
     {
     }
 }
