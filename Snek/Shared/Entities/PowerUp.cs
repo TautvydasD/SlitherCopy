@@ -4,10 +4,15 @@ using System.Text;
 
 namespace Snek.Shared.Entities
 {
-    class PowerUp
+    public class PowerUp
     {
         public int Duration { get; private set; }
         public string Color { get; private set; }
+        public string Name { get; set; }
 
+        public PowerUp(string name)
+        {
+            name = Name;
+        }
     }
 }
