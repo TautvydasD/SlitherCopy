@@ -34,12 +34,15 @@ Slither.io-like game with power ups, multiple levels.
 
 [asp.net tutorial with signalR](https://docs.microsoft.com/lt-lt/aspnet/core/tutorials/signalr?tabs=visual-studio&view=aspnetcore-3.1)
 
-[SignalR ASP.NET slither.io copy](https://github.com/fleiser/signalr-snake) 
+[SignalR ASP.NET slither.io copy](https://github.com/fleiser/signalr-snake)
+
 [Blazor WebAssembly SignalR](https://docs.microsoft.com/en-us/aspnet/core/tutorials/signalr-blazor-webassembly?view=aspnetcore-3.1&tabs=visual-studio)
 
 [Tic Tac Toe Blazor example](https://exceptionnotfound.net/using-blazor-webassembly-and-csharp-to-play-tic-tac-toe-in-dotnet-core/)
 
 [Huge Blazor examples repo](https://github.com/Lupusa87/LupusaBlazorDemos)
+
+[Word Game Blazor](https://medium.com/@bora.kasmer78/word-game-with-blazor-and-signalr-on-netcore-e14e125233f2)
 
 ## Task List
 
