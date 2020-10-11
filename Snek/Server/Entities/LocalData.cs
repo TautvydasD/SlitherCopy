@@ -8,7 +8,7 @@ namespace Snek.Server.Entities
     public static class LocalData
     {
 
-        public static ChildBoard CurrCompBoard = null;
+        public static trashChildBoard CurrCompBoard = null;
         public static ChildWalls CurrCompWalls = null;
 
         public static double CompWidth = 800.0;

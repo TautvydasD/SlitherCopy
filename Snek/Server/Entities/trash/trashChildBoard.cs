@@ -9,7 +9,7 @@ using Snek.Shared.Classes;
 
 namespace Snek.Server.Entities
 {
-    public class ChildBoard : ComponentBase
+    public class trashChildBoard : ComponentBase
     {
         List<Rectan> Rectans = new List<Rectan>();
 
