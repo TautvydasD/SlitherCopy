@@ -1,9 +1,9 @@
 ﻿@page "/trash"
 @using Microsoft.AspNetCore.Components.Web;
-@using Snek.
+
 <h1>Snake</h1>
 
-<div>
+@*<div>
     <div style="vertical-align: middle; margin: 5px">
         <button class="btn btn-primary" @onclick="@run">reset</button>
         <input style="margin: 5px" type="checkbox" @bind="@input_Is_Bot_Mode" /> Bot Mode
@@ -20,9 +20,9 @@
     <svg width="500" height="500" xmlns="http://www.w3.org/2000/svg">
         <rect x="0" y="0" width="800" height="540" style="fill:lightyellow;stroke:#999999;stroke-width:5">
 
-        </rect>
+        </rect>*@
 
-        @if (Board.Walls_List.Count > 1)
+        @*@if (Board.Walls_List.Count > 1)
         {
             <ChildWalls></ChildWalls>
         }
@@ -35,9 +35,9 @@
             <text x=20 y="525" fill="green" font-family="Sylfaen" font-size="24">@CurrPoint</text>
         </g>
 
-    </svg>
+    </svg>*@
 
-    <br>
+    @*<br>
 
     <div style="vertical-align: middle; margin: 5px" align="left">
         <label style="margin: 5px"> Time interval: </label>
@@ -59,7 +59,7 @@
         <label style="margin: 5px"> max lenght: </label>
         <input style="margin: 5px" @bind="@walls_max_length" type="number" min="2" max="50" step="1" />
     </div>
-</div>
+</div>*@
 
 @code {
 
