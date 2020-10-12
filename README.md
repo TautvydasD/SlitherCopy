@@ -44,6 +44,8 @@ Slither.io-like game with power ups, multiple levels.
 
 [Word Game Blazor](https://medium.com/@bora.kasmer78/word-game-with-blazor-and-signalr-on-netcore-e14e125233f2)
 
+[Samples for learning Blazor](https://medium.com/young-coder/the-best-samples-to-teach-yourself-blazor-4d29cec607f5)
+
 ## Task List
 
 - [x] Create project
