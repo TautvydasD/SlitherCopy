@@ -36,8 +36,14 @@
     {
         this._context = await this._canvasReference.CreateWebGLAsync();
 
-        await this._context.ClearColorAsync(0, 0, 0, 1);
+        await this._context.ClearColorAsync(0, 0, 0, 1); // this call does not draw anything, so it does not need to be included in the explicit batch
+
+        await this._context.BeginBatchAsync(); // begin the explicit batch
+
         await this._context.ClearAsync(BufferBits.COLOR_BUFFER_BIT);
+        await this._context.DrawArraysAsync(Primitive.TRIANGLES, 0, 3);
+
+        await this._context.EndBatchAsync(); // execute all currently batched calls
     }
     public void OnKeyDown()
     {
