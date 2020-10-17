@@ -46,6 +46,8 @@ Slither.io-like game with power ups, multiple levels.
 
 [Samples for learning Blazor](https://medium.com/young-coder/the-best-samples-to-teach-yourself-blazor-4d29cec607f5)
 
+[GOLD MINE](https://project-awesome.org/AdrienTorris/awesome-blazor#sample-projects)
+
 ## Task List
 
 - [x] Create project
