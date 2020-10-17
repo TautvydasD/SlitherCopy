@@ -3,16 +3,56 @@
 @using Blazor.Extensions;
 @using Blazor.Extensions.Canvas.Canvas2D;
 @using Blazor.Extensions.Canvas.WebGL; 
+@using Snek.Shared.Board; 
+
+@inject HttpClient Http
 
 <h3>Snake</h3>
 
-@*<input @onkeydown="@OnKeyDown" />*@
-<div @onload="@OnKeyDown">
+<div class="row">
+    <div class="col-sm text-center">
+        <h4>Our Snake ☭</h4>
+
+        @*<table class="snake-map">
+            @for (int i = 0; i < 10; i++)
+            {
+                <tr>
+                    @for (int j = 0; j < 10; j++)
+                    {
+                        <td class="snake-tile">
+                            <div style="width:35px;height:35px;">
+
+                            </div>
+                        </td>
+                    }
+                </tr>
+            }
+        </table>*@
+
+        <table class="snake-map">
+            @for (int i = 0; i < Map.GetLength(0); i++)
+            {
+                <tr>
+                    @for (int j = 0; j < Map.GetLength(1); j++)
+                    {
+                        <td class="snake-tile">
+                            <div style="width:35px;height:35px;" class="@((pos.Column == j && pos.Row == i) ? "yellow": "")">
+                            </div>
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
+    </div>
 
 </div>
-<BECanvas Width="300" Height="400" @ref="_canvasReference"></BECanvas>
+
 
 @code {
+
+    public int[,] Map = new int[10, 10];
+
+    public Coordinates pos = new Coordinates(5, 5);
 
     //private Canvas2DContext _context;
 
@@ -21,47 +61,55 @@
     //protected override async Task OnAfterRenderAsync(bool firstRender)
     //{
     //    this._context = await this._canvasReference.CreateCanvas2DAsync();
+    //    await this._context.SetFillStyleAsync("white");
+    //    await this._context.SetLineWidthAsync(10);
     //    await this._context.SetFillStyleAsync("green");
+    //    for (int i = 0; i < 10; i++)
+    //    {
+    //        await this._context.FillRectAsync(10, 100, 100, 100);
+    //        //for (int j = 0; j < length; j++)
+    //        //{
 
-    //    await this._context.FillRectAsync(10, 100, 100, 100);
+    //        //}
+    //    }
 
-    //    await this._context.SetFontAsync("48px serif");
-    //    await this._context.StrokeTextAsync("Hello Blazor!!!", 10, 100);
+    //    //await this._context.SetFontAsync("48px serif");
+    //    //await this._context.StrokeTextAsync("Hello Blazor!!!", 10, 100);
     //}
-    private WebGLContext _context;
+    ////private WebGLContext _context;
 
-    protected BECanvasComponent _canvasReference;
+    ////protected BECanvasComponent _canvasReference;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        this._context = await this._canvasReference.CreateWebGLAsync();
+    ////protected override async Task OnAfterRenderAsync(bool firstRender)
+    ////{
+    ////    this._context = await this._canvasReference.CreateWebGLAsync();
 
-        await this._context.ClearColorAsync(0, 0, 0, 1); // this call does not draw anything, so it does not need to be included in the explicit batch
+    ////    await this._context.ClearColorAsync(0, 0, 0, 1); // this call does not draw anything, so it does not need to be included in the explicit batch
 
-        await this._context.BeginBatchAsync(); // begin the explicit batch
+    ////    await this._context.BeginBatchAsync(); // begin the explicit batch
 
-        await this._context.ClearAsync(BufferBits.COLOR_BUFFER_BIT);
-        await this._context.DrawArraysAsync(Primitive.TRIANGLES, 0, 3);
+    ////    await this._context.ClearAsync(BufferBits.COLOR_BUFFER_BIT);
+    ////    await this._context.DrawArraysAsync(Primitive.TRIANGLES, 0, 3);
 
-        await this._context.EndBatchAsync(); // execute all currently batched calls
-    }
-    public void OnKeyDown()
-    {
-        //var pos1 = new Point(20, 20);
-        //var pos = new Rectangle(10,10,20,20);
-        //var color = new Color();
-        //color.
-        Graphics GR;
-        Bitmap BM;
-        Rectangle myrect = new Rectangle(10, 10, 10, 10);
-        Pen penTest = new System.Drawing.Pen(Brushes.Red);
+    ////    await this._context.EndBatchAsync(); // execute all currently batched calls
+    ////}
+    //public void OnKeyDown()
+    //{
+    //    //var pos1 = new Point(20, 20);
+    //    //var pos = new Rectangle(10,10,20,20);
+    //    //var color = new Color();
+    //    //color.
+    //    Graphics GR;
+    //    Bitmap BM;
+    //    Rectangle myrect = new Rectangle(10, 10, 10, 10);
+    //    Pen penTest = new System.Drawing.Pen(Brushes.Red);
 
-        //using (GR = Graphics.FromImage((Image)BM))
-        //{
-        //    GR.DrawRectangle(penTest, myrect);
-        //}
+    //    //using (GR = Graphics.FromImage((Image)BM))
+    //    //{
+    //    //    GR.DrawRectangle(penTest, myrect);
+    //    //}
 
-        //picturebox1.Image = BM;
+    //    //picturebox1.Image = BM;
 
-    }
+    //}
 }
