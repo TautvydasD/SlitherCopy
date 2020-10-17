@@ -4,19 +4,24 @@ using System.Text;
 
 namespace Snek.Shared.Entities
 {
-    public class FoodFactory : IMap
+    public class ConcreteFactory1 : IMap
     {
-
         public Food CreateFood(string foodName)
         {
             Food food = new Food(foodName);
             return food;
         }
 
-        // baaaaaaaaaaad
         public PowerUp CreatePowerUp(string powerUpName)
         {
-            throw new NotImplementedException();
+            PowerUp powerUp = new PowerUp(powerUpName);
+            return powerUp;
+        }
+
+        public PowerUp CreatePowerUp2(string powerupName) 
+        {
+            PowerUp powerUp = new PowerUp(powerupName);
+            return powerUp;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace Snek.Shared.Entities
     {
         public Food CreateFood(string foodName);
         public PowerUp CreatePowerUp(string powerUpName);
+        public PowerUp CreatePowerUp2(string powerUpName);
 
     }
 }
