@@ -20,6 +20,23 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="_content/Blazor.Extensions.Canvas/blazor.extensions.canvas.js"></script>
+    <style>
+        window.convertArray = (win1251Array) = > {
+            var win1251decoder = new TextDecoder('windows-1251');
+            var bytes = new Uint8Array(win1251Array);
+            var decodedArray = win1251decoder.decode(bytes);
+            console .log(decodedArray);
+            return decodedArray;
+        }
+
+        ;
+
+        window.SetFocusToElement = (element) = > {
+            element .focus();
+        }
+
+        ;
+    </style>
 </body>
 
 </html>
