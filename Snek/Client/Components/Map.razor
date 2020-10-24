@@ -1,15 +1,13 @@
 ﻿@using Snek.Shared.Board;
 @using Snek.Shared;
+@inject IJSRuntime JSRuntime;
 
-<button class="btn btn-primary" @onclick="GoLeft">Left</button>
+<button class="btn btn-primary" @onclick="_gameManager.MoveLeft">Left</button>
+<button class="btn btn-primary" @onclick="_gameManager.MoveRight">Right</button>
+<button class="btn btn-primary" @onclick="_gameManager.MoveUp">Up</button>
+<button class="btn btn-primary" @onclick="_gameManager.MoveDown">Down</button>
 
-<button class="btn btn-primary" @onclick="GoRight">Right</button>
-
-<button class="btn btn-primary" @onclick="GoUp">Up</button>
-
-<button class="btn btn-primary" @onclick="GoDown">Down</button>
-
-<div class="row">
+<div class="row" @onclick="_gameManager.StartGame" @onkeydown="@HandleKeyUp" tabindex="0" @ref="myDiv">
     <div class="col-sm text-center">
         <h4>Our Snake ☭</h4>
         <table class="snake-map">
@@ -19,7 +17,7 @@
                     @for (int j = 0; j < MapMatrix.GetLength(1); j++)
                     {
                         <td class="snake-tile">
-                            <div style="width:35px;height:35px;" class="@((food.Column == j && food.Row == i)? "red" : "")  @((pos.Column == j && pos.Row == i) ? "green": "")">
+                            <div style="width:35px;height:35px;" class="@((food.Column == j && food.Row == i)? "red" : "")  @((_gameManager.pos.Column == j && _gameManager.pos.Row == i) ? "green": "")">
                             </div>
                         </td>
                     }
@@ -29,38 +27,75 @@
     </div>
 </div>
 
+<h4>Highscore: @Score</h4>
+
+@*<div class="jumbotron"
+         @onkeydown="@KeyDown"
+         tabindex="0"
+         @ref="myDiv">
+        <h1 class="display-4">
+            @letter
+        </h1>
+    </div>*@
+
+
 @code {
+
+    public int Score { get; set; } = 0;
+    public string letter { get; set; } = "";
     public int[,] MapMatrix = new int[10, 10];
-    public Coordinates food { get; set; } = new Coordinates(5, 5);
+    public Coordinates food { get; set; }
 
-    public Coordinates pos { get; set; } = new Coordinates(1, 1);
+    GameManager _gameManager { get; set; }
 
-    private void GoRight()
+    protected ElementReference myDiv;  // set by the @ref attribute
+
+    protected override void OnInitialized()
     {
-        if (pos.Column == 9)
-            pos.Column = 0;
-        else
-            pos.Column++;
+        _gameManager = new GameManager();
+        _gameManager.MoveRight();
+        GenerateFood();
+        _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
     }
-    private void GoLeft()
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        if (pos.Column == 0)
-            pos.Column = 9;
-        else
-            pos.Column--;
+        AddScore(_gameManager.pos, food);
+        if (firstRender)
+            await JSRuntime.InvokeVoidAsync("SetFocusToElement", myDiv);
     }
-    private void GoDown()
+
+    protected void KeyDown(KeyboardEventArgs e)
     {
-        if (pos.Row == 9)
-            pos.Row = 0;
-        else
-            pos.Row++;
+        letter = $"Pressed: [{e.Key}]";
     }
-    private void GoUp()
+
+    protected void HandleKeyUp(KeyboardEventArgs e)
     {
-        if (pos.Row == 0)
-            pos.Row = 9;
-        else
-            pos.Row--;
+        letter = $"Pressed: [{e.Key}]";
+        if (e.Key == "ArrowUp")
+            _gameManager.MoveUp();
+        else if (e.Key == "ArrowDown")
+            _gameManager.MoveDown();
+        else if (e.Key == "ArrowLeft")
+            _gameManager.MoveLeft();
+        else if (e.Key == "ArrowRight")
+            _gameManager.MoveRight();
+    }
+
+    public void GenerateFood()
+    {
+        Random rnd = new Random();
+        int row = rnd.Next(0, 9);
+        int column = rnd.Next(0, 9);
+        food = new Coordinates(row, column);
+    }
+    public void AddScore(Coordinates player, Coordinates food)
+    {
+        if (player.Column == food.Column && player.Row == food.Row)
+        {
+            Score++;
+            GenerateFood();
+        }
     }
 }
