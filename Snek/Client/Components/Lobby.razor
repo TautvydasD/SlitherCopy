@@ -1,5 +1,155 @@
+<<<<<<< Updated upstream
 ﻿<h3>Lobby</h3>
 
 @code {
+=======
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NavigationManager
+@implements IDisposable
+@inject IJSRuntime JSRuntime
+@if (isLobby == true)
+{
+    if (!isLoggedIn && !isFullLobby)
+    {
+        <label>
+            User: <input @bind="Username" @ref=ReferenceToLoginControl />
+        </label>
+        <button @onclick="Send" disabled="@(!IsConnected)">Login</button>
+    }
+    @*<button class="btn btn-primary">Create Lobby</button>
+        <br />
 
+        <button class="btn btn-primary">Join Lobby</button>
+        <br />*@
+
+    <button class="btn btn-primary" @onclick="Back">Back</button>
+    <br />
+    <div class="form-group">
+        @if (_otherUsers.Any())
+        {
+            foreach (var item in _otherUsers)
+            {
+                <label><b>Player :</b> @item</label> <br>
+            }
+
+        }
+    </div>
+    <h3>Hello</h3>
+
+}
+@if (isMainMenu)
+{
+    <MainMenu></MainMenu>
+}
+
+@code {
+
+    public bool isLoggedIn { get; set; } = false;
+    public bool isFullLobby { get; set; } = false;
+    public string Username { get; set; }
+    public bool isLobby { get; set; } = true;
+    public bool isMainMenu { get; set; } = false;
+    public string connectionID;
+    public List<string> _otherUsers { get; set; } = new List<string>();
+    public bool isRenderUI { get; set; } = false;// to understand if the page finished loading
+
+    private HubConnection hubConnection;
+
+    ElementReference ReferenceToLoginControl; //not sure why its needed
+
+    private void Back()
+    {
+        isMainMenu = true;
+        isLobby = false;
+
+    }
+>>>>>>> Stashed changes
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/lobbyhub"))
+            .Build();
+
+        hubConnection.On<string, List<string>>("GetConnectionId", async (connectionID, otherUsers) =>
+        {
+            await JSRuntime.InvokeAsync<object>("console.log", "ConnectionId :" + connectionID);
+            if (otherUsers.Any() && isRenderUI == true)
+            {
+                for (int i = 0; i < otherUsers.Count; i++)
+                {
+                    _otherUsers[i] = otherUsers[i];
+                    StateHasChanged();
+                }
+            }
+        });
+
+        hubConnection.On<string>("SendUserInformation", async (otherConnectionID) =>
+        {
+            await hubConnection.SendAsync("SendUserInformation", Username, otherConnectionID);
+        });
+
+        hubConnection.On<string, string>("ReceiveUser", (_username, _connectionId) =>
+        {
+            if (Username == _username)
+            {
+                isLoggedIn = true;
+            }
+            else
+            {
+                _otherUsers.Add(_username);
+            }
+            StateHasChanged();
+        });
+
+        hubConnection.On<string, string>("RemoveUser", (_username, _connectionID) =>
+        {
+            if (Username != _username)
+            {
+                foreach (var item in _otherUsers)
+                {
+                    if (item == _username)
+                    {
+                        _otherUsers.Remove(item);
+                        StateHasChanged();
+                    }
+                }
+
+            }
+        });
+
+        hubConnection.On("NoRoom", async () =>
+        {
+            isFullLobby = true;
+            await JSRuntime.InvokeVoidAsync("applyStyleForElement",
+                                            new { id = "blazorBody", attrib = "background-image", value = "url('../Images/wall31.jpeg')" });
+
+            StateHasChanged();
+        });
+
+
+        await hubConnection.StartAsync();
+    }
+
+
+    Task Send() =>
+        hubConnection.SendAsync("LoginUser", Username, connectionID);
+
+    public bool IsConnected =>
+        hubConnection.State == HubConnectionState.Connected;
+
+    public void Dispose()
+    {
+        _ = hubConnection.DisposeAsync();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        isRenderUI = true;
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JSRuntime.InvokeVoidAsync("FocusScript.setFocus", ReferenceToLoginControl);
+    }
 }

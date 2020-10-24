@@ -61,6 +61,7 @@ namespace Snek.Server
                 endpoints.MapControllers();
                 endpoints.MapHub<ChatHub>("/chathub");
                 endpoints.MapHub<GameHub>("/tictac");
+                endpoints.MapHub<LobbyHub>("/lobbyhub");
                 endpoints.MapFallbackToFile("index.html");
             });
         }

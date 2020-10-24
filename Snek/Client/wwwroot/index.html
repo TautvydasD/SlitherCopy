@@ -31,12 +31,30 @@
 
         ;
 
-        window.SetFocusToElement = (element) = > {
+/*        window.SetFocusToElement = (element) = > {
             element .focus();
         }
 
-        ;
+        ;*/
     </style>
+
+    <script>
+        //window.applyStyleForElement = function (styleOp, styleOp2) {
+        //    document.getElementById(styleOp.id).style[styleOp.attrib] = styleOp.value;
+        //    if (styleOp2 != null) {
+        //        document.getElementById(styleOp2.id).style[styleOp2.attrib] = styleOp2.value;
+        //    }
+        //}
+
+        //window.getStyleForElement = function (styleOp) {
+        //    return document.getElementById(styleOp.id).style[styleOp.attrib] == "inline" ? true : false;
+        //}
+
+        var FocusScript = FocusScript || {};
+        FocusScript.setFocus = function (element) {
+            element.focus();
+        };
+    </script>
 </body>
 
 </html>
