@@ -21,7 +21,8 @@ namespace Snek.Server.Hubs
         public override async Task OnConnectedAsync()
         {
             Console.WriteLine("Client Connected: " + this.Context.ConnectionId);
-            var otherNames = new List<string>();
+            //var otherNames = new List<string>();
+            string otherName = null;
             Console.WriteLine("Players Count : " + playerList.Count);
 
             if(playerList.Count > 0 && playerList.Count < 4)
@@ -30,10 +31,9 @@ namespace Snek.Server.Hubs
             }
             else if (playerList.Count == 0)
             {
-                foreach (var item in otherNames)
-                {
-                    await Clients.Caller.SendAsync("GetConnectionId", this.Context.ConnectionId, item);
-                }
+
+                await Clients.Caller.SendAsync("GetConnectionId", this.Context.ConnectionId, otherName);
+
                 
                
             }

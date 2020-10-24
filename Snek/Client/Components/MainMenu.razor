@@ -1,5 +1,45 @@
-﻿<h3>MainMenu</h3>
+﻿@if (isMainMenu == true)
+{
 
+
+    <button class="btn btn-primary" @onclick="SinglePlayer">Single Player</button>
+
+
+    <br />
+
+    <button class="btn btn-primary" @onclick="Multiplayer">Multiplayer</button>
+    <br />
+
+    <button class="btn btn-primary">Options</button>
+    <br />
+
+}
+
+@if (isSinglePlayer == true)
+{
+    <Map></Map>
+}
+@if (isMultiplayer)
+{
+    <Lobby></Lobby>
+}
 @code {
 
+
+    public bool isSinglePlayer { get; set; } = false;
+    public bool isMainMenu { get; set; } = true;
+    public bool isMultiplayer { get; set; } = false;
+
+    private void SinglePlayer()
+    {
+        isSinglePlayer = true;
+        isMainMenu = false;
+
+    }
+
+    private void Multiplayer()
+    {
+        isMainMenu = false;
+        isMultiplayer = true;
+    }
 }
