@@ -9,11 +9,49 @@
 @inject NavigationManager NavigationManager;
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime;
+@using Microsoft.AspNetCore.SignalR.Client
+@using Snek.Shared.Classes
+@using Snek.Shared.Entities
 
 <h3>Snake</h3>
 
+
 <Game></Game>
 
-@code {
+<div class="row">
+    <div class="col">
+        <form class="form-inline justify-content-center">
+            <div class="form-group mx-3 mb-2">
+                <label for="userName" class="sr-only">Username:</label>
+                <input type="text" class="form-control" id="userName" placeholder="Username" @bind="@PlayerName" />
+            </div>
+        </form>
+    </div>
+</div>
 
+@code {
+    string PlayerName { get; set; }
+    private HubConnection hubConnection;
+    Games CurrentGame { get; set; }
+    User Player { get; set; }
+    private List<string> messages = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/snake"))
+            .Build();
+
+        //Receive message
+
+        await hubConnection.StartAsync();
+    }
+
+    public bool IsConnected =>
+        hubConnection.State == HubConnectionState.Connected;
+
+    public void Dispose()
+    {
+        _ = hubConnection.DisposeAsync();
+    }
 }
