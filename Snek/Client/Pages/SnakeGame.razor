@@ -1,0 +1,19 @@
+﻿@page "/snake"
+@using System.Drawing;
+@using Blazor.Extensions;
+@using Blazor.Extensions.Canvas.Canvas2D;
+@using Blazor.Extensions.Canvas.WebGL;
+@using Snek.Shared.Board;
+@using Snek.Shared;
+@using Snek.Client.Components;
+@inject NavigationManager NavigationManager;
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime;
+
+<h3>Snake</h3>
+
+<Game></Game>
+
+@code {
+
+}

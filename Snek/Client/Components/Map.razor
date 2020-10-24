@@ -1,0 +1,66 @@
+﻿@using Snek.Shared.Board;
+@using Snek.Shared;
+
+<button class="btn btn-primary" @onclick="GoLeft">Left</button>
+
+<button class="btn btn-primary" @onclick="GoRight">Right</button>
+
+<button class="btn btn-primary" @onclick="GoUp">Up</button>
+
+<button class="btn btn-primary" @onclick="GoDown">Down</button>
+
+<div class="row">
+    <div class="col-sm text-center">
+        <h4>Our Snake ☭</h4>
+        <table class="snake-map">
+            @for (int i = 0; i < MapMatrix.GetLength(0); i++)
+            {
+                <tr>
+                    @for (int j = 0; j < MapMatrix.GetLength(1); j++)
+                    {
+                        <td class="snake-tile">
+                            <div style="width:35px;height:35px;" class="@((food.Column == j && food.Row == i)? "red" : "")  @((pos.Column == j && pos.Row == i) ? "green": "")">
+                            </div>
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+@code {
+    public int[,] MapMatrix = new int[10, 10];
+    public Coordinates food { get; set; } = new Coordinates(5, 5);
+
+    public Coordinates pos { get; set; } = new Coordinates(1, 1);
+
+    private void GoRight()
+    {
+        if (pos.Column == 9)
+            pos.Column = 0;
+        else
+            pos.Column++;
+    }
+    private void GoLeft()
+    {
+        if (pos.Column == 0)
+            pos.Column = 9;
+        else
+            pos.Column--;
+    }
+    private void GoDown()
+    {
+        if (pos.Row == 9)
+            pos.Row = 0;
+        else
+            pos.Row++;
+    }
+    private void GoUp()
+    {
+        if (pos.Row == 0)
+            pos.Row = 9;
+        else
+            pos.Row--;
+    }
+}

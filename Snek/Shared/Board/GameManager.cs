@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Snek.Shared
+namespace Snek.Shared.Board
 {
-    class Game
+    class GameManager
     {
-        
     }
 }
