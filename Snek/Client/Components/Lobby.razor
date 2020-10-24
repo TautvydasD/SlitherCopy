@@ -1,5 +1,30 @@
-﻿<h3>Lobby</h3>
+﻿@if (isLobby == true)
+{
+    <button class="btn btn-primary">Create Lobby</button>
+    <br />
+
+    <button class="btn btn-primary">Join Lobby</button>
+    <br />
+
+    <button class="btn btn-primary" @onclick="Back">Back</button>
+    <br />
+
+}
+@if (isMainMenu)
+{
+    <MainMenu></MainMenu>
+}
 
 @code {
+    public string Username { get; set; }
+    public bool isLobby { get; set; } = true;
+    public bool isMainMenu { get; set; } = false;
+
+    private void Back()
+    {
+        isMainMenu = true;
+        isLobby = false;
+
+    }
 
 }
