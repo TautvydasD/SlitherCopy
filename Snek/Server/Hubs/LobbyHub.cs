@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
 using Snek.Server.Entities;
+using Snek.Shared.Entities;
 
 namespace Snek.Server.Hubs
 {
     
     public class LobbyHub : Hub
     {
-        static ConcurrentDictionary<string, string> playerList = new ConcurrentDictionary<string, string>();
+        static List<User> playerList = new List<User>();
+        //static ConcurrentDictionary<string, string> playerList = new ConcurrentDictionary<string, string>();
         public LobbyHub()
         {
            
@@ -50,9 +52,13 @@ namespace Snek.Server.Hubs
 
         public async Task AddList(string userName, string connectionID)
         {
+            User user = new User();
             if(playerList.Count >= 0 && playerList.Count < 4)
             {
-                playerList.TryAdd(userName, connectionID);
+                user.Username = userName;
+                user.ConnectionID = connectionID;
+                //playerList.TryAdd(userName, connectionID);
+                playerList.Add(user);
                 await Clients.All.SendAsync("ReceiveUser", userName, connectionID);
             }
             //else if(playerList.Count == 0)
@@ -74,11 +80,13 @@ namespace Snek.Server.Hubs
             {
                 string connectionId = Context.ConnectionId;
                 Console.WriteLine("Client If Disconnected:" + connectionId);
-                string userName = playerList.FirstOrDefault(entry => entry.Value == connectionId).Key;
+                string userName = playerList.FirstOrDefault(entry => entry.ConnectionID == connectionId).Username;
                 Console.WriteLine("Client If Disconnected UserName:" + userName);
                 if (userName != null)
                 {
-                    playerList.TryRemove(userName, out _);
+                    User user = new User(userName, connectionId);
+                    //playerList.TryRemove(userName, out _);
+                    playerList.Remove(user);
                 }
                 if (playerList.Count == 1 || playerList.Count == 0)
                 {
