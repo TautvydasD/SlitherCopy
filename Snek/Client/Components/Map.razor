@@ -1,66 +1,146 @@
 ﻿@using Snek.Shared.Board;
 @using Snek.Shared;
+@inject IJSRuntime JSRuntime;
 
-<button class="btn btn-primary" @onclick="GoLeft">Left</button>
+<div style="width:1000px;height:500px;display:flex;">
+    <div style="position:relative; left:30px;top:30px; width:200px;height:400px;border: 5px solid green;background:rgba(60,179,113,0.9)">
+        <div>
+            <h4>Highscore</h4>
+        </div>
+        <div>
+            Player 1: @Score
+        </div>
+    </div>
 
-<button class="btn btn-primary" @onclick="GoRight">Right</button>
+    <div class="row" @onclick="_gameManager.StartGame" @onkeydown="@HandleKeyUp" tabindex="0" @ref="myDiv" style="margin:auto;">
+        <div class="col-sm text-center">
+            @*<h4>Our Snake ☭</h4>*@
+            <table class="snake-map">
+                @for (int i = 0; i < MapMatrix.GetLength(0); i++)
+                {
+                    <tr>
+                        @for (int j = 0; j < MapMatrix.GetLength(1); j++)
+                        {
+                            <td class="snake-tile">
+                                @if (_gameManager.snake.pos.Column == j && _gameManager.snake.pos.Row == i)
+                                {
+                                    <div style="width:20px;height:20px;" class="green"></div>
+                                }
+                                else if (food.Column == j && food.Row == i)
+                                {
+                                    <div style="width:20px;height:20px;">
+                                        <img src="@fruits[fruitIndex]" style="width:20px;height:20px;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div style="width:20px;height:20px;"></div>
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
 
-<button class="btn btn-primary" @onclick="GoUp">Up</button>
+</div>
 
-<button class="btn btn-primary" @onclick="GoDown">Down</button>
-
-<div class="row">
-    <div class="col-sm text-center">
-        <h4>Our Snake ☭</h4>
-        <table class="snake-map">
-            @for (int i = 0; i < MapMatrix.GetLength(0); i++)
-            {
-                <tr>
-                    @for (int j = 0; j < MapMatrix.GetLength(1); j++)
-                    {
-                        <td class="snake-tile">
-                            <div style="width:35px;height:35px;" class="@((food.Column == j && food.Row == i)? "red" : "")  @((pos.Column == j && pos.Row == i) ? "green": "")">
-                            </div>
-                        </td>
-                    }
-                </tr>
-            }
-        </table>
+<div style="display:block;height:200px;width:200px;margin:auto;position:relative;border: 5px solid green;background:rgba(60,179,113,0.9);">
+    <div style="height: 60px; width: 60px; position: absolute; top: 0px; left:35%">
+        <button style="height: 60px; width: 60px;" class="btn btn-primary" @onclick="_gameManager.snake.MoveUp">Up</button>
+    </div>
+    <div style="height:60px;width:60px;position: absolute;left:35%;bottom:0px">
+        <button style="height: 60px; width: 60px;" class="btn btn-primary" @onclick="_gameManager.snake.MoveDown">Down</button>
+    </div>
+    <div style="height: 60px; width: 60px; position: absolute; top: 34%; left: 0px ">
+        <button style="height: 60px; width: 60px;" class="btn btn-primary" @onclick="_gameManager.snake.MoveLeft">Left</button>
+    </div>
+    <div style="height: 60px; width: 60px; position: absolute; top: 34%; right: 0px ">
+        <button style="height: 60px; width: 60px;" class="btn btn-primary" @onclick="_gameManager.snake.MoveRight">Right</button>
     </div>
 </div>
 
+@*<div style="position:relative; left: 100px;width:200px;height:400px;border: 5px solid green;background:rgba(60,179,113,0.9)">
+        <div>
+            <h4>Highscore</h4>
+        </div>
+        <div>
+            Player 1: @Score
+        </div>
+    </div>*@
+
+@*<div class="jumbotron"
+         @onkeydown="@KeyDown"
+         tabindex="0"
+         @ref="myDiv">
+        <h1 class="display-4">
+            @letter
+        </h1>
+    </div>*@
+
+
 @code {
+    public string[] fruits { get; set; } = { "apple.png", "cherry2.png", "pineapple.png",
+                                             "rainbowApple.png", "spoiledApple2.png", "speed.png",
+                                             "shrink.png", "cash.png"};
+    public int fruitIndex { get; set; }
+    public int Score { get; set; } = 0;
+    public string letter { get; set; } = "";
     public int[,] MapMatrix = new int[10, 10];
-    public Coordinates food { get; set; } = new Coordinates(5, 5);
+    public Coordinates food { get; set; }
 
-    public Coordinates pos { get; set; } = new Coordinates(1, 1);
+    GameManager _gameManager { get; set; }
 
-    private void GoRight()
+    protected ElementReference myDiv;  // set by the @ref attribute
+
+    protected override void OnInitialized()
     {
-        if (pos.Column == 9)
-            pos.Column = 0;
-        else
-            pos.Column++;
+        _gameManager = new GameManager();
+        _gameManager.snake.MoveRight();
+        GenerateFood();
+        _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
     }
-    private void GoLeft()
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        if (pos.Column == 0)
-            pos.Column = 9;
-        else
-            pos.Column--;
+        AddScore(_gameManager.snake.pos, food);
+        if (firstRender)
+            await JSRuntime.InvokeVoidAsync("SetFocusToElement", myDiv);
     }
-    private void GoDown()
+
+    protected void KeyDown(KeyboardEventArgs e)
     {
-        if (pos.Row == 9)
-            pos.Row = 0;
-        else
-            pos.Row++;
+        letter = $"Pressed: [{e.Key}]";
     }
-    private void GoUp()
+
+    protected void HandleKeyUp(KeyboardEventArgs e)
     {
-        if (pos.Row == 0)
-            pos.Row = 9;
-        else
-            pos.Row--;
+        letter = $"Pressed: [{e.Key}]";
+        if (e.Key == "ArrowUp")
+            _gameManager.snake.MoveUp();
+        else if (e.Key == "ArrowDown")
+            _gameManager.snake.MoveDown();
+        else if (e.Key == "ArrowLeft")
+            _gameManager.snake.MoveLeft();
+        else if (e.Key == "ArrowRight")
+            _gameManager.snake.MoveRight();
+    }
+
+    public void GenerateFood()
+    {
+        Random rnd = new Random();
+        fruitIndex = rnd.Next(0, 8);
+        int row = rnd.Next(0, 9);
+        int column = rnd.Next(0, 9);
+        food = new Coordinates(row, column);
+    }
+    public void AddScore(Coordinates player, Coordinates food)
+    {
+        if (player.Column == food.Column && player.Row == food.Row)
+        {
+            Score++;
+            GenerateFood();
+        }
     }
 }

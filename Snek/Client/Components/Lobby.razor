@@ -32,12 +32,8 @@
     }
     </div>
 
-
     <button class="btn btn-primary" @onclick="Back">Back</button>
     <br />
-
-
-
 }
 @if (isMainMenu)
 {
@@ -45,6 +41,16 @@
 }
 
 @code {
+    public string Username { get; set; }
+    public bool isLobby { get; set; } = true;
+    public bool isMainMenu { get; set; } = false;
+
+    private void Back()
+    {
+        isMainMenu = true;
+        isLobby = false;
+
+    }
 
     public bool isLoggedIn { get; set; } = false;
     public bool isFullLobby { get; set; } = false;
