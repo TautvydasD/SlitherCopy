@@ -27,6 +27,33 @@ namespace Snek.Server.Entities
 
         }
 
+        public void AddPlayer(User user)
+        {
+            if(generatedPlayers < 4)
+            {
+                generatedPlayers++;
+                user.Index = generatedPlayers;
+                Players.Add(user);
+            }
+        }
+        public void DeletePlayer(User userD)
+        {
+            Players.RemoveAll(user => user.Username == userD.Username);
+            generatedPlayers--;
+        }
+
+        public String DeletePlayerByConnectionId(String connectionId)
+        {
+            string userName = null;
+            userName = Players.FirstOrDefault(entry => entry.ConnectionID == connectionId).Username;
+            if (userName != null)
+            {
+                User user = new User(userName, connectionId);
+                DeletePlayer(user);
+            }
+            return userName;
+        }
+
         public static Singleton GetInstance()
         {
             return instance;

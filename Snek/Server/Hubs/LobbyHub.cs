@@ -13,7 +13,8 @@ namespace Snek.Server.Hubs
     
     public class LobbyHub : Hub
     {
-        static List<User> playerList = new List<User>();
+        static Singleton singleton = new Singleton();
+        //static List<User> playerList = new List<User>();
         //static ConcurrentDictionary<string, string> playerList = new ConcurrentDictionary<string, string>();
         public LobbyHub()
         {
@@ -25,21 +26,17 @@ namespace Snek.Server.Hubs
             Console.WriteLine("Client Connected: " + this.Context.ConnectionId);
             //var otherNames = new List<string>();
             string otherName = null;
-            Console.WriteLine("Players Count : " + playerList.Count);
+            Console.WriteLine("Players Count : " + singleton.generatedPlayers);
 
-            if(playerList.Count > 0 && playerList.Count < 4)
+            if(singleton.generatedPlayers > 0 && singleton.generatedPlayers < 4)
             {
                 await Clients.Others.SendAsync("SendUserInformation", this.Context.ConnectionId);
             }
-            else if (playerList.Count == 0)
+            else if (singleton.generatedPlayers == 0)
             {
-
                 await Clients.Caller.SendAsync("GetConnectionId", this.Context.ConnectionId, otherName);
-
-                
-               
             }
-            else if (playerList.Count > 3)
+            else if (singleton.generatedPlayers > 3)
             {
                 await Clients.Caller.SendAsync("NoRoom");
             }
@@ -53,12 +50,12 @@ namespace Snek.Server.Hubs
         public async Task AddList(string userName, string connectionID)
         {
             User user = new User();
-            if(playerList.Count >= 0 && playerList.Count < 4)
+            if(singleton.generatedPlayers >= 0 && singleton.generatedPlayers < 4)
             {
                 user.Username = userName;
                 user.ConnectionID = connectionID;
                 //playerList.TryAdd(userName, connectionID);
-                playerList.Add(user);
+                singleton.AddPlayer(user);
                 await Clients.All.SendAsync("ReceiveUser", userName, connectionID);
             }
             //else if(playerList.Count == 0)
@@ -76,22 +73,21 @@ namespace Snek.Server.Hubs
         public override async Task OnDisconnectedAsync(Exception exception) // dont understand this method, left everything the same as the original
         {
             Console.WriteLine("Player Disconnected:" + Context.ConnectionId);
-            if (playerList.Count > 0)
+            if (singleton.generatedPlayers > 0)
             {
                 string connectionId = Context.ConnectionId;
                 Console.WriteLine("Client If Disconnected:" + connectionId);
-                string userName = playerList.FirstOrDefault(entry => entry.ConnectionID == connectionId).Username;
+                string userName = singleton.DeletePlayerByConnectionId(connectionId);
+                //string userName = playerList.FirstOrDefault(entry => entry.ConnectionID == connectionId).Username;
                 Console.WriteLine("Client If Disconnected UserName:" + userName);
-                if (userName != null)
-                {
-                    User user = new User(userName, connectionId);
+                //if (userName != null)
+                //{
+                    //User user = new User(userName, connectionId);
                     //playerList.TryRemove(userName, out _);
-                    playerList.RemoveAll(user => user.Username == userName);
-                }
+                    //playerList.RemoveAll(user => user.Username == userName);
+                //}
                 //if (playerList.Count >= 0 && playerList.Count < 2)
-                
-                    await Clients.Others.SendAsync("RemoveUser", userName, connectionId);
-                
+                await Clients.Others.SendAsync("RemoveUser", userName, connectionId);     
             }
             await base.OnDisconnectedAsync(exception);
         }
