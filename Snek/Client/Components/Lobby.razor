@@ -11,25 +11,29 @@
             User: <input @bind="Username" @ref=ReferenceToLoginControl />
         </label>
         <button @onclick="Send" disabled="@(!IsConnected)">Login</button>
-    }
-    @*<button class="btn btn-primary">Create Lobby</button>
-        <br />
 
-        <button class="btn btn-primary">Join Lobby</button>
-        <br />*@
+    }
+    else if (isLoggedIn)
+    {
+        <label><b>Your username :</b>@Username</label><br />
+    }
+
+    <div class="form-group">
+    @if (_otherUsers.Any())
+    {
+        foreach (var item in _otherUsers)
+        {
+            <label><b>Player :</b> @item</label> <br>
+        }
+
+    }
+    </div>
+
 
     <button class="btn btn-primary" @onclick="Back">Back</button>
     <br />
-    <div class="form-group">
-        @if (_otherUsers.Any())
-        {
-            foreach (var item in _otherUsers)
-            {
-                <label><b>Player :</b> @item</label> <br>
-            }
 
-        }
-    </div>
+
 
 }
 @if (isMainMenu)
@@ -123,9 +127,10 @@
         hubConnection.On("NoRoom", async () =>
         {
             isFullLobby = true;
-            await JSRuntime.InvokeVoidAsync("applyStyleForElement",
-                                            new { id = "blazorBody", attrib = "background-image", value = "url('../Images/wall31.jpeg')" }); //bbz
 
+            
+            string message = "lobby is full, please wait";
+            await JSRuntime.InvokeVoidAsync("alert", message);
             StateHasChanged();
         });
 
