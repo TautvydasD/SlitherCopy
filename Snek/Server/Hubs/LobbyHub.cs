@@ -86,12 +86,12 @@ namespace Snek.Server.Hubs
                 {
                     User user = new User(userName, connectionId);
                     //playerList.TryRemove(userName, out _);
-                    playerList.Remove(user);
+                    playerList.RemoveAll(user => user.Username == userName);
                 }
-                if (playerList.Count == 1 || playerList.Count == 0)
-                {
+                //if (playerList.Count >= 0 && playerList.Count < 2)
+                
                     await Clients.Others.SendAsync("RemoveUser", userName, connectionId);
-                }
+                
             }
             await base.OnDisconnectedAsync(exception);
         }

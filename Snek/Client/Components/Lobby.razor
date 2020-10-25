@@ -52,7 +52,7 @@
     public bool isLobby { get; set; } = true;
     public bool isMainMenu { get; set; } = false;
     public string connectionID;
-    public User user { get; set; }
+    public User user { get; set; } = new User();
     public List<User> _otherUsers { get; set; } = new List<User>();
     public bool isRenderUI { get; set; } = false;// to understand if the page finished loading
 
@@ -80,7 +80,7 @@
             if (otherUser != null && isRenderUI == true)
             {
                 user.Username = otherUser;
-                user.ConnectionID = _connectionID;
+                user.ConnectionID = connectionID;
                 _otherUsers.Add(user);
                 StateHasChanged();
             }
@@ -97,8 +97,9 @@
             connectionID = _connectionID;
             if (otherUserName != null && isRenderUI == true)
             {
-                user.Username = otherUserName;
-                user.ConnectionID = _connectionID;
+                user = new User(otherUserName, connectionID);
+                //user.Username = otherUserName;
+                //user.ConnectionID = connectionID;
                 _otherUsers.Add(user);
                 StateHasChanged();
             }
@@ -111,8 +112,9 @@
             }
             else
             {
-                user.Username = _username;
-                user.ConnectionID = _connectionId;
+                user = new User(_username, _connectionId);
+                //user.Username = _username;
+                //user.ConnectionID = _connectionId;
                 _otherUsers.Add(user);
             }
             StateHasChanged();
