@@ -1,14 +1,39 @@
-﻿@if (isLobby == true)
+@using Snek.Shared.Entities
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NavigationManager
+@implements IDisposable
+@inject IJSRuntime JSRuntime
+@if (isLobby == true)
 {
-    <button class="btn btn-primary">Create Lobby</button>
-    <br />
+<div class="form-group">
+    @if (!isLoggedIn && !isFullLobby)
+    {
+    <label>
+        User: <input @bind="Username" @ref=ReferenceToLoginControl />
+    </label>
+    <button @onclick="Send" disabled="@(!IsConnected)">Login</button>
 
-    <button class="btn btn-primary">Join Lobby</button>
-    <br />
+    }
+
+    @if (isLoggedIn)
+    {
+    <label><b>Your username :</b>@Username</label><br />
+    }
+</div>
+
+    <div class="form-group">
+    @if (_otherUsers.Any())
+    {
+        foreach (var item in _otherUsers)
+        {
+            <label><b>Player :</b> @item.Username</label> <br>
+        }
+
+    }
+    </div>
 
     <button class="btn btn-primary" @onclick="Back">Back</button>
     <br />
-
 }
 @if (isMainMenu)
 {
@@ -27,4 +52,129 @@
 
     }
 
+    public bool isLoggedIn { get; set; } = false;
+    public bool isFullLobby { get; set; } = false;
+    public string Username { get; set; }
+    public bool isLobby { get; set; } = true;
+    public bool isMainMenu { get; set; } = false;
+    public string connectionID;
+    public User user { get; set; } = new User();
+    public List<User> _otherUsers { get; set; } = new List<User>();
+    public bool isRenderUI { get; set; } = false;// to understand if the page finished loading
+
+    private HubConnection hubConnection;
+
+    ElementReference ReferenceToLoginControl; //not sure why its needed
+
+    private void Back()
+    {
+        isMainMenu = true;
+        isLobby = false;
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/lobbyhub"))
+            .Build();
+
+        hubConnection.On<string, string>("GetConnectionId", async (_connectionID, otherUser) =>
+        {
+            await JSRuntime.InvokeAsync<object>("console.log", "ConnectionId :" + _connectionID + "        " + otherUser);
+            connectionID = _connectionID;
+            if (otherUser != null && isRenderUI == true)
+            {
+                user.Username = otherUser;
+                user.ConnectionID = connectionID;
+                _otherUsers.Add(user);
+                StateHasChanged();
+            }
+        });
+
+        hubConnection.On<string>("SendUserInformation", async (otherConnectionID) =>
+        {
+            await hubConnection.SendAsync("SendUserInformation", Username, otherConnectionID);
+        });
+
+        hubConnection.On<string, string>("GetUserInformation", async (otherUserName, _connectionID) =>
+        {
+            await JSRuntime.InvokeAsync<object>("console.log", "ConnectionID :" + _connectionID);
+            connectionID = _connectionID;
+            if (otherUserName != null && isRenderUI == true)
+            {
+                user = new User(otherUserName, connectionID);
+                //user.Username = otherUserName;
+                //user.ConnectionID = connectionID;
+                _otherUsers.Add(user);
+                StateHasChanged();
+            }
+        });
+        hubConnection.On<string, string>("ReceiveUser", (_username, _connectionId) =>
+        {
+            if (Username == _username)
+            {
+                isLoggedIn = true;
+            }
+            else
+            {
+                user = new User(_username, _connectionId);
+                //user.Username = _username;
+                //user.ConnectionID = _connectionId;
+                _otherUsers.Add(user);
+            }
+            StateHasChanged();
+        });
+
+        hubConnection.On<string, string>("RemoveUser", (_username, _connectionID) =>
+        {
+            if (Username != _username)
+            {
+                foreach (var item in _otherUsers)
+                {
+                    if (item.Username == _username)
+                    {
+                        _otherUsers.Remove(item);
+                        StateHasChanged();
+                    }
+                }
+
+            }
+        });
+
+        hubConnection.On("NoRoom", async () =>
+        {
+            isFullLobby = true;
+
+
+            string message = "lobby is full, please wait";
+            await JSRuntime.InvokeVoidAsync("alert", message);
+            StateHasChanged();
+        });
+
+
+        await hubConnection.StartAsync();
+    }
+
+
+    Task Send() =>
+        hubConnection.SendAsync("LoginUser", Username, connectionID);
+
+    public bool IsConnected =>
+        hubConnection.State == HubConnectionState.Connected;
+
+    public void Dispose()
+    {
+        _ = hubConnection.DisposeAsync();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        isRenderUI = true;
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JSRuntime.InvokeVoidAsync("SetFocusToElement", ReferenceToLoginControl);
+    }
 }
