@@ -26,7 +26,7 @@
     {
         foreach (var item in _otherUsers)
         {
-            <label><b>Player :</b> @item</label> <br>
+            <label><b>Player :</b> @item.Username</label> <br>
         }
 
     }
@@ -52,7 +52,8 @@
     public bool isLobby { get; set; } = true;
     public bool isMainMenu { get; set; } = false;
     public string connectionID;
-    public List<string> _otherUsers { get; set; } = new List<string>();
+    public User user { get; set; }
+    public List<User> _otherUsers { get; set; } = new List<User>();
     public bool isRenderUI { get; set; } = false;// to understand if the page finished loading
 
     private HubConnection hubConnection;
@@ -78,7 +79,9 @@
             connectionID = _connectionID;
             if (otherUser != null && isRenderUI == true)
             {
-                _otherUsers.Add(otherUser);
+                user.Username = otherUser;
+                user.ConnectionID = _connectionID;
+                _otherUsers.Add(user);
                 StateHasChanged();
             }
         });
@@ -94,7 +97,9 @@
             connectionID = _connectionID;
             if (otherUserName != null && isRenderUI == true)
             {
-                _otherUsers.Add(otherUserName);
+                user.Username = otherUserName;
+                user.ConnectionID = _connectionID;
+                _otherUsers.Add(user);
                 StateHasChanged();
             }
         });
@@ -106,7 +111,9 @@
             }
             else
             {
-                _otherUsers.Add(_username);
+                user.Username = _username;
+                user.ConnectionID = _connectionId;
+                _otherUsers.Add(user);
             }
             StateHasChanged();
         });
@@ -117,7 +124,7 @@
             {
                 foreach (var item in _otherUsers)
                 {
-                    if (item == _username)
+                    if (item.Username == _username)
                     {
                         _otherUsers.Remove(item);
                         StateHasChanged();
@@ -131,7 +138,7 @@
         {
             isFullLobby = true;
 
-            
+
             string message = "lobby is full, please wait";
             await JSRuntime.InvokeVoidAsync("alert", message);
             StateHasChanged();
