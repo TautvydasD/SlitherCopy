@@ -2,33 +2,74 @@
 @using Snek.Shared;
 @inject IJSRuntime JSRuntime;
 
-<button class="btn btn-primary" @onclick="_gameManager.MoveLeft">Left</button>
-<button class="btn btn-primary" @onclick="_gameManager.MoveRight">Right</button>
-<button class="btn btn-primary" @onclick="_gameManager.MoveUp">Up</button>
-<button class="btn btn-primary" @onclick="_gameManager.MoveDown">Down</button>
+<div style="width:1000px;height:500px;display:flex;">
+    <div style="position:relative; left:30px;top:30px; width:200px;height:400px;border: 5px solid green;background:rgba(60,179,113,0.9)">
+        <div>
+            <h4>Highscore</h4>
+        </div>
+        <div>
+            Player 1: @Score
+        </div>
+    </div>
 
-<div class="row" @onclick="_gameManager.StartGame" @onkeydown="@HandleKeyUp" tabindex="0" @ref="myDiv">
-    <div class="col-sm text-center">
-        <h4>Our Snake ☭</h4>
-        <table class="snake-map">
-            @for (int i = 0; i < MapMatrix.GetLength(0); i++)
-            {
-                <tr>
-                    @for (int j = 0; j < MapMatrix.GetLength(1); j++)
-                    {
-                        <td class="snake-tile">
-                            <div style="width:35px;height:35px;" class="@((food.Column == j && food.Row == i)? "red" : "")  @((_gameManager.pos.Column == j && _gameManager.pos.Row == i) ? "green": "")">
-                            </div>
-                        </td>
-                    }
-                </tr>
-            }
-        </table>
+    <div class="row" @onclick="_gameManager.StartGame" @onkeydown="@HandleKeyUp" tabindex="0" @ref="myDiv" style="margin:auto;">
+        <div class="col-sm text-center">
+            @*<h4>Our Snake ☭</h4>*@
+            <table class="snake-map">
+                @for (int i = 0; i < MapMatrix.GetLength(0); i++)
+                {
+                    <tr>
+                        @for (int j = 0; j < MapMatrix.GetLength(1); j++)
+                        {
+                            <td class="snake-tile">
+                                @if (_gameManager.snake.pos.Column == j && _gameManager.snake.pos.Row == i)
+                                {
+                                    <div style="width:20px;height:20px;" class="green"></div>
+                                }
+                                else if (food.Column == j && food.Row == i)
+                                {
+                                    <div style="width:20px;height:20px;">
+                                        <img src="@fruits[fruitIndex]" style="width:20px;height:20px;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div style="width:20px;height:20px;"></div>
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div style="display:block;height:200px;width:200px;margin:auto;position:relative;border: 5px solid green;background:rgba(60,179,113,0.9);">
+    <div style="height: 60px; width: 60px; position: absolute; top: 0px; left:35%">
+        <button style="height: 60px; width: 60px;" class="btn btn-primary" @onclick="_gameManager.snake.MoveUp">Up</button>
+    </div>
+    <div style="height:60px;width:60px;position: absolute;left:35%;bottom:0px">
+        <button style="height: 60px; width: 60px;" class="btn btn-primary" @onclick="_gameManager.snake.MoveDown">Down</button>
+    </div>
+    <div style="height: 60px; width: 60px; position: absolute; top: 34%; left: 0px ">
+        <button style="height: 60px; width: 60px;" class="btn btn-primary" @onclick="_gameManager.snake.MoveLeft">Left</button>
+    </div>
+    <div style="height: 60px; width: 60px; position: absolute; top: 34%; right: 0px ">
+        <button style="height: 60px; width: 60px;" class="btn btn-primary" @onclick="_gameManager.snake.MoveRight">Right</button>
     </div>
 </div>
 
-<h4>Highscore: @Score</h4>
-Nice
+@*<div style="position:relative; left: 100px;width:200px;height:400px;border: 5px solid green;background:rgba(60,179,113,0.9)">
+        <div>
+            <h4>Highscore</h4>
+        </div>
+        <div>
+            Player 1: @Score
+        </div>
+    </div>*@
+
 @*<div class="jumbotron"
          @onkeydown="@KeyDown"
          tabindex="0"
@@ -40,7 +81,10 @@ Nice
 
 
 @code {
-
+    public string[] fruits { get; set; } = { "apple.png", "cherry2.png", "pineapple.png",
+                                             "rainbowApple.png", "spoiledApple2.png", "speed.png",
+                                             "shrink.png", "cash.png"};
+    public int fruitIndex { get; set; }
     public int Score { get; set; } = 0;
     public string letter { get; set; } = "";
     public int[,] MapMatrix = new int[10, 10];
@@ -53,14 +97,14 @@ Nice
     protected override void OnInitialized()
     {
         _gameManager = new GameManager();
-        _gameManager.MoveRight();
+        _gameManager.snake.MoveRight();
         GenerateFood();
         _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
     }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        AddScore(_gameManager.pos, food);
+        AddScore(_gameManager.snake.pos, food);
         if (firstRender)
             await JSRuntime.InvokeVoidAsync("SetFocusToElement", myDiv);
     }
@@ -74,18 +118,19 @@ Nice
     {
         letter = $"Pressed: [{e.Key}]";
         if (e.Key == "ArrowUp")
-            _gameManager.MoveUp();
+            _gameManager.snake.MoveUp();
         else if (e.Key == "ArrowDown")
-            _gameManager.MoveDown();
+            _gameManager.snake.MoveDown();
         else if (e.Key == "ArrowLeft")
-            _gameManager.MoveLeft();
+            _gameManager.snake.MoveLeft();
         else if (e.Key == "ArrowRight")
-            _gameManager.MoveRight();
+            _gameManager.snake.MoveRight();
     }
 
     public void GenerateFood()
     {
         Random rnd = new Random();
+        fruitIndex = rnd.Next(0, 8);
         int row = rnd.Next(0, 9);
         int column = rnd.Next(0, 9);
         food = new Coordinates(row, column);
