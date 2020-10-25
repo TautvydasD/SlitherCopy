@@ -50,15 +50,16 @@ namespace Snek.Server.Hubs
 
         public async Task AddList(string userName, string connectionID)
         {
-            if(playerList.Count > 0 && playerList.Count < 4)
-            {
-                playerList.TryAdd(userName, connectionID);
-            }
-            else if(playerList.Count == 0)
+            if(playerList.Count >= 0 && playerList.Count < 4)
             {
                 playerList.TryAdd(userName, connectionID);
                 await Clients.All.SendAsync("ReceiveUser", userName, connectionID);
             }
+            //else if(playerList.Count == 0)
+            //{
+            //    playerList.TryAdd(userName, connectionID);
+            //    await Clients.All.SendAsync("ReceiveUser", userName, connectionID);
+            //}
         }
 
         public async Task LoginUser(string userName, string connectionID)
