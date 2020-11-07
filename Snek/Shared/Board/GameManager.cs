@@ -9,7 +9,7 @@ namespace Snek.Shared.Board
 {
     public class GameManager
     {
-        private readonly int _speed = 200;
+        private readonly int _speed = 100;
         public event EventHandler MainLoopCompleted;
 
         //public bool IsMovingUp { get; set; } = false;
@@ -21,6 +21,7 @@ namespace Snek.Shared.Board
 
         //public Coordinates pos { get; private set; }
         public Snake snake { get; set; }
+        public SnakeDirector director { get; set; }
         public GameManager()
         {
             ResetGameObjects();
@@ -80,14 +81,25 @@ namespace Snek.Shared.Board
         //}
         public void Transition()
         {
-            if (snake.pos.Column > 9)
-                snake.pos.Column = -1;
-            else if (snake.pos.Column < 0)
-                snake.pos.Column = 10;
-            else if (snake.pos.Row > 9)
-                snake.pos.Row = -1;
-            else if (snake.pos.Row < 0)
-                snake.pos.Row = 10;
+            if (snake.Head.pos.Column > 9)
+                snake.Head.pos.Column = -1;
+            else if (snake.Head.pos.Column < 0)
+                snake.Head.pos.Column = 10;
+            else if (snake.Head.pos.Row > 9)
+                snake.Head.pos.Row = -1;
+            else if (snake.Head.pos.Row < 0)
+                snake.Head.pos.Row = 10;
+            foreach(var item in snake.Body.posList)
+            {
+                if (item.Column > 9)
+                    item.Column = -1;
+                else if (item.Column < 0)
+                    item.Column = 10;
+                else if (item.Row > 9)
+                    item.Row = -1;
+                else if (item.Row < 0)
+                    item.Row = 10;
+            }
         }
         public void StartGame()
         {
@@ -103,7 +115,12 @@ namespace Snek.Shared.Board
         }
         private void ResetGameObjects()
         {
-            snake = new Snake(1, 1);
+            Coordinates pos = new Coordinates(1, 1);
+            List<Coordinates> posList = new List<Coordinates>{pos};
+            director = new SnakeDirector(new ConcreteSnakeBuilder());
+            director.Construct(pos, posList);
+            snake = director.GetConstructedSnake();
+            //snake = new Snake(1, 1);
             //pos = new Coordinates(1, 1);
         }
     }

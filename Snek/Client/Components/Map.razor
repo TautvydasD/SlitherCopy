@@ -89,7 +89,6 @@
     public string letter { get; set; } = "";
     public int[,] MapMatrix = new int[10, 10];
     public Coordinates food { get; set; }
-
     GameManager _gameManager { get; set; }
 
     protected ElementReference myDiv;  // set by the @ref attribute
@@ -104,7 +103,7 @@
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        AddScore(_gameManager.snake.pos, food);
+        AddScore(_gameManager.snake.Head.pos, food);
         if (firstRender)
             await JSRuntime.InvokeVoidAsync("SetFocusToElement", myDiv);
     }
