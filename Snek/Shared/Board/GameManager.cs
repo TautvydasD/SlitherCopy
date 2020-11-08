@@ -55,46 +55,6 @@ namespace Snek.Shared.Board
                 await Task.Delay(snake.Speed());
             }
         }
-        //public void MovingDirection()
-        //{
-        //    if (IsMovingUp)
-        //        pos.Row--;
-        //    else if (IsMovingDown)
-        //        pos.Row++;
-        //    else if (IsMovingLeft)
-        //        pos.Column--;
-        //    else if (IsMovingRight)
-        //        pos.Column++;
-        //}
-
-        //public void MoveUp()
-        //{
-        //    IsMovingUp = true;
-        //    IsMovingDown = false;
-        //    IsMovingLeft = false;
-        //    IsMovingRight = false;
-        //}
-        //public void MoveDown()
-        //{
-        //    IsMovingDown = true;
-        //    IsMovingUp = false;
-        //    IsMovingLeft = false;
-        //    IsMovingRight = false;
-        //}
-        //public void MoveLeft()
-        //{
-        //    IsMovingLeft = true;
-        //    IsMovingRight = false;
-        //    IsMovingDown = false;
-        //    IsMovingUp = false;
-        //}
-        //public void MoveRight()
-        //{
-        //    IsMovingRight = true;
-        //    IsMovingLeft = false;
-        //    IsMovingDown = false;
-        //    IsMovingUp = false;
-        //}
         public void Transition()
         {
             if (snake.Head.pos.Column > 9)

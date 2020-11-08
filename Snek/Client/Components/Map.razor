@@ -106,7 +106,7 @@
     {
         //Console.WriteLine($"Y:{food.Row}; X:{food.Column}");
         AddScore(_gameManager.snake.Head.pos, food);
-        InvokePowerUp(_gameManager.snake.pos, powerUp);
+        InvokePowerUp(_gameManager.snake.Head.pos, powerUp);
         if (firstRender)
             await JSRuntime.InvokeVoidAsync("SetFocusToElement", myDiv);
     }
