@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Snek.Shared.Board
@@ -10,52 +11,160 @@ namespace Snek.Shared.Board
         public bool IsMovingDown { get; set; } = false;
         public bool IsMovingRight { get; set; } = false;
         public bool IsMovingLeft { get; set; } = false;
+        //public int SnakeLength { get; set; }
+        public bool SpeedBoost { get; set; } = false;
 
+        public IMovement Movement { get; set; }
+
+        public SnakeHead Head { get; set; }
+        public SnakeBody Body { get; set; }
         public Coordinates pos { get; set; }
-
+        
         public Snake() { }
         public Snake(int X, int Y)
         {
-            pos = new Coordinates(X, Y);
+            Head.pos = new Coordinates(X, Y);
+        }
+
+        public void SetMovementSpeed(IMovement movement)
+        {
+            Movement = movement;
+        }
+
+        public int Speed()
+        {
+            return Movement.Move();
         }
         public void MovingDirection()
         {
-            if (IsMovingUp)
-                pos.Row--;
+            if (IsMovingUp) 
+            {
+                List<Coordinates> list = new List<Coordinates>(Body.posArr);
+                list.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
+                Body.posArr = list.ToArray();
+                //Body.posList.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
+                //Body.posList.RemoveAt(Body.posList.Count - 1);
+                //Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
+                //Body.posArr = Body.posArr.Take(Body.posArr.Count() - 1).ToArray();
+
+                list.RemoveAt(Body.posArr.Length - 1);
+                Body.posArr = list.ToArray();
+                Head.pos.Row--;
+            }
             else if (IsMovingDown)
-                pos.Row++;
+            {
+                List<Coordinates> list = new List<Coordinates>(Body.posArr);
+                list.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
+                Body.posArr = list.ToArray();
+                //Body.posList.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
+                //Body.posList.RemoveAt(Body.posList.Count - 1);
+                //Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
+                //Body.posArr = Body.posArr.Take(Body.posArr.Count() - 1).ToArray();
+
+                list.RemoveAt(Body.posArr.Length - 1);
+                Body.posArr = list.ToArray();
+                Head.pos.Row++;
+            }
             else if (IsMovingLeft)
-                pos.Column--;
+            {
+                List<Coordinates> list = new List<Coordinates>(Body.posArr);
+                list.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
+                Body.posArr = list.ToArray();
+                //Body.posList.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
+                //Body.posList.RemoveAt(Body.posList.Count - 1);
+                //Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
+                //Body.posArr = Body.posArr.Take(Body.posArr.Count() - 1).ToArray();
+
+                list.RemoveAt(Body.posArr.Length - 1);
+                Body.posArr = list.ToArray();
+                Head.pos.Column--;
+            }
             else if (IsMovingRight)
-                pos.Column++;
+            {
+                List<Coordinates> list = new List<Coordinates>(Body.posArr);
+                list.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
+                Body.posArr = list.ToArray();
+                //Body.posList.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
+                //Body.posList.RemoveAt(Body.posList.Count - 1);
+                //Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
+                //Body.posArr = Body.posArr.Take(Body.posArr.Count() - 1).ToArray();
+
+                list.RemoveAt(Body.posArr.Length - 1);
+                Body.posArr = list.ToArray();
+                Head.pos.Column++;
+            }
+        }
+
+        public void Grow()
+        {
+            //Body.posList.Add( new Coordinates(Head.pos.Row, Head.pos.Column));
+            //Body.posArr[Body.posArr.Count()] = new Coordinates(Head.pos.Row, Head.pos.Column);
+            Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
         }
         public void MoveUp()
         {
-            IsMovingUp = true;
-            IsMovingDown = false;
-            IsMovingLeft = false;
-            IsMovingRight = false;
+            if (!IsMovingDown)
+            {
+                IsMovingUp = true;
+                IsMovingDown = false;
+                IsMovingLeft = false;
+                IsMovingRight = false;
+            }
+
         }
         public void MoveDown()
         {
-            IsMovingDown = true;
-            IsMovingUp = false;
-            IsMovingLeft = false;
-            IsMovingRight = false;
+            if (!IsMovingUp)
+            {
+                IsMovingDown = true;
+                IsMovingUp = false;
+                IsMovingLeft = false;
+                IsMovingRight = false;
+            }
+
         }
         public void MoveLeft()
         {
-            IsMovingLeft = true;
-            IsMovingRight = false;
-            IsMovingDown = false;
-            IsMovingUp = false;
+            if (!IsMovingRight)
+            {
+                IsMovingLeft = true;
+                IsMovingRight = false;
+                IsMovingDown = false;
+                IsMovingUp = false;
+            }
+
         }
         public void MoveRight()
         {
-            IsMovingRight = true;
-            IsMovingLeft = false;
-            IsMovingDown = false;
-            IsMovingUp = false;
+            if (!IsMovingLeft)
+            {
+                IsMovingRight = true;
+                IsMovingLeft = false;
+                IsMovingDown = false;
+                IsMovingUp = false;
+            }
+
+        }
+        public void UsePowerUp(string PowerUp)
+        {
+            switch (PowerUp)
+            {
+                case "CoinBox":; break;
+                case "DoublePoints":; break;
+                case "Shrinker":; break;
+                case "SpeedBoost": SpeedBoost = true; break;
+            }
+        }
+
+        public void DiscardPowerUp(string PowerUp)
+        {
+            switch (PowerUp)
+            {
+                case "CoinBox":; break;
+                case "DoublePoints":; break;
+                case "Shrinker":; break;
+                case "SpeedBoost": SpeedBoost = false; break;
+            }
         }
     }
 }

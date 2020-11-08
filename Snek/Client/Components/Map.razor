@@ -1,6 +1,8 @@
-﻿@using Snek.Shared.Board;
+@using Snek.Shared.Board;
 @using Snek.Shared;
 @using Snek.Shared.Entities;
+@using System.Linq;
+
 @inject IJSRuntime JSRuntime;
 
 <div class="game">
@@ -23,9 +25,13 @@
                         @for (int j = 0; j < MapMatrix.GetLength(1); j++)
                         {
                             <td class="snake-tile">
-                                @if (_gameManager.snake.pos.Column == j && _gameManager.snake.pos.Row == i)
+                                @if (_gameManager.snake.Head.pos.Column == j && _gameManager.snake.Head.pos.Row == i)
                                 {
                                     <div class="cell-size green"></div>
+                                }
+                                else if (_gameManager.snake.Body.posArr.Any(pos => pos.Row == i && pos.Column == j))
+                                {
+                                    <div class="cell-size red"></div>
                                 }
                                 else if (food.Column == j && food.Row == i)
                                 {
@@ -83,6 +89,7 @@
     public Coordinates powerUp { get; set; }
     GameManager _gameManager { get; set; }
 
+
     protected ElementReference myDiv;  // set by the @ref attribute
 
     protected override void OnInitialized()
@@ -98,7 +105,7 @@
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         //Console.WriteLine($"Y:{food.Row}; X:{food.Column}");
-        AddScore(_gameManager.snake.pos, food);
+        AddScore(_gameManager.snake.Head.pos, food);
         InvokePowerUp(_gameManager.snake.pos, powerUp);
         if (firstRender)
             await JSRuntime.InvokeVoidAsync("SetFocusToElement", myDiv);
@@ -115,6 +122,18 @@
             _gameManager.snake.MoveLeft();
         else if (e.Key == "ArrowRight")
             _gameManager.snake.MoveRight();
+        else if (e.Key == "e")
+        {
+            Snek.Shared.Entities.PowerUp powerUp = new Snek.Shared.Entities.PowerUp("SpeedBoost");
+            powerUp.Name = "SpeedBoost";
+            _gameManager.powerUpControl.UsePowerUp(_gameManager.snake, powerUp);
+            //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
+        }
+        else if (e.Key == "r")
+        {
+            _gameManager.powerUpControl.Discard(0);
+            //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
+        }
     }
 
     public void GenerateFood()
@@ -150,6 +169,7 @@
     {
         if (player.Column == food.Column && player.Row == food.Row)
         {
+            _gameManager.snake.Grow();
             Score++;
             GenerateFood();
         }
