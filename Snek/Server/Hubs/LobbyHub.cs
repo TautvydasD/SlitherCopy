@@ -13,7 +13,7 @@ namespace Snek.Server.Hubs
     
     public class LobbyHub : Hub
     {
-        static Singleton singleton = new Singleton();
+        static Singleton singleton = Singleton.GetInstance();
         //static List<User> playerList = new List<User>();
         //static ConcurrentDictionary<string, string> playerList = new ConcurrentDictionary<string, string>();
         public LobbyHub()
@@ -27,7 +27,6 @@ namespace Snek.Server.Hubs
             //var otherNames = new List<string>();
             string otherName = null;
             Console.WriteLine("Players Count : " + singleton.generatedPlayers);
-
             if(singleton.generatedPlayers > 0 && singleton.generatedPlayers < 4)
             {
                 await Clients.Others.SendAsync("SendUserInformation", this.Context.ConnectionId);

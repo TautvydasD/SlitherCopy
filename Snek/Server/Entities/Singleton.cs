@@ -18,13 +18,14 @@ namespace Snek.Server.Entities
         public int generatedRooms;
         public int generatedPlayers;
 
+        private static object syncLock = new object();
+
         public Singleton()
         {
             Lobbies = new List<Lobby>();
             generatedRooms = 0;
             generatedPlayers = 0;
             Players = new List<User>();
-
         }
 
         public void AddPlayer(User user)
@@ -56,6 +57,16 @@ namespace Snek.Server.Entities
 
         public static Singleton GetInstance()
         {
+            if (instance == null)
+            {
+                lock (syncLock)
+                {
+                    if (instance == null)
+                    {
+                        instance = new Singleton();
+                    }
+                }
+            }
             return instance;
         }
     }
