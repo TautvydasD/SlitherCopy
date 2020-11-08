@@ -25,43 +25,67 @@ namespace Snek.Shared.Board
         {
             if (IsMovingUp) 
             {
+                List<Coordinates> list = new List<Coordinates>(Body.posArr);
+                list.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
+                Body.posArr = list.ToArray();
                 //Body.posList.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
                 //Body.posList.RemoveAt(Body.posList.Count - 1);
-                Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
+                //Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
                 //Body.posArr = Body.posArr.Take(Body.posArr.Count() - 1).ToArray();
+
+                list.RemoveAt(Body.posArr.Length - 1);
+                Body.posArr = list.ToArray();
                 Head.pos.Row--;
             }
             else if (IsMovingDown)
             {
+                List<Coordinates> list = new List<Coordinates>(Body.posArr);
+                list.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
+                Body.posArr = list.ToArray();
                 //Body.posList.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
                 //Body.posList.RemoveAt(Body.posList.Count - 1);
-                Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
+                //Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
                 //Body.posArr = Body.posArr.Take(Body.posArr.Count() - 1).ToArray();
+
+                list.RemoveAt(Body.posArr.Length - 1);
+                Body.posArr = list.ToArray();
                 Head.pos.Row++;
             }
             else if (IsMovingLeft)
             {
+                List<Coordinates> list = new List<Coordinates>(Body.posArr);
+                list.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
+                Body.posArr = list.ToArray();
                 //Body.posList.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
                 //Body.posList.RemoveAt(Body.posList.Count - 1);
-                Body.posArr.CopyTo(new Coordinates(Head.pos.Row, Head.pos.Column), 0);
+                //Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
                 //Body.posArr = Body.posArr.Take(Body.posArr.Count() - 1).ToArray();
+
+                list.RemoveAt(Body.posArr.Length - 1);
+                Body.posArr = list.ToArray();
                 Head.pos.Column--;
             }
             else if (IsMovingRight)
             {
-                Body.posList.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
-                Body.posList.RemoveAt(Body.posList.Count - 1);
+                List<Coordinates> list = new List<Coordinates>(Body.posArr);
+                list.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
+                Body.posArr = list.ToArray();
+                //Body.posList.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
+                //Body.posList.RemoveAt(Body.posList.Count - 1);
                 //Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
                 //Body.posArr = Body.posArr.Take(Body.posArr.Count() - 1).ToArray();
+
+                list.RemoveAt(Body.posArr.Length - 1);
+                Body.posArr = list.ToArray();
                 Head.pos.Column++;
             }
         }
 
         public void Grow()
         {
-            Body.posList.Add( new Coordinates(Head.pos.Row, Head.pos.Column));
+            //Body.posList.Add( new Coordinates(Head.pos.Row, Head.pos.Column));
             //Body.posArr[Body.posArr.Count()] = new Coordinates(Head.pos.Row, Head.pos.Column);
-            //Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
+            Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
         }
         public void MoveUp()
         {

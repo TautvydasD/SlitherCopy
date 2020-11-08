@@ -89,16 +89,27 @@ namespace Snek.Shared.Board
                 snake.Head.pos.Row = -1;
             else if (snake.Head.pos.Row < 0)
                 snake.Head.pos.Row = 10;
-            foreach(var item in snake.Body.posArr)
+            //foreach(var item in snake.Body.posArr)
+            //{
+            //    if (item.Column > 9)
+            //        item.Column = -1;
+            //    else if (item.Column < 0)
+            //        item.Column = 10;
+            //    else if (item.Row > 9)
+            //        item.Row = -1;
+            //    else if (item.Row < 0)
+            //        item.Row = 10;
+            //}
+            for (int i = 0; i < snake.Body.posArr.Length; i++)
             {
-                if (item.Column > 9)
-                    item.Column = -1;
-                else if (item.Column < 0)
-                    item.Column = 10;
-                else if (item.Row > 9)
-                    item.Row = -1;
-                else if (item.Row < 0)
-                    item.Row = 10;
+                if (snake.Body.posArr[i].Column > 9)
+                    snake.Body.posArr[i].Column = -1;
+                else if (snake.Body.posArr[i].Column < 0)
+                    snake.Body.posArr[i].Column = 10;
+                else if (snake.Body.posArr[i].Row > 9)
+                    snake.Body.posArr[i].Row = -1;
+                else if (snake.Body.posArr[i].Row < 0)
+                    snake.Body.posArr[i].Row = 10;
             }
         }
         public void StartGame()
