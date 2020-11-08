@@ -1,5 +1,6 @@
 ﻿@using Snek.Shared.Board;
 @using Snek.Shared;
+@using System.Linq;
 @inject IJSRuntime JSRuntime;
 
 <div style="width:1000px;height:500px;display:flex;">
@@ -21,22 +22,27 @@
                     <tr>
                         @for (int j = 0; j < MapMatrix.GetLength(1); j++)
                         {
-                            <td class="snake-tile">
-                                @if (_gameManager.snake.pos.Column == j && _gameManager.snake.pos.Row == i)
-                                {
-                                    <div style="width:20px;height:20px;" class="green"></div>
-                                }
-                                else if (food.Column == j && food.Row == i)
-                                {
-                                    <div style="width:20px;height:20px;">
-                                        <img src="@fruits[fruitIndex]" style="width:20px;height:20px;" />
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div style="width:20px;height:20px;"></div>
-                                }
-                            </td>
+                        <td class="snake-tile">
+                            @if (_gameManager.snake.Head.pos.Column == j && _gameManager.snake.Head.pos.Row == i)
+                            {
+                                <div style="width:20px;height:20px;" class="green"></div>
+                            }
+                            else if (_gameManager.snake.Body.posArr.Any(pos => pos.Row == i && pos.Column == j))
+                            {
+                                <div style="width:20px;height:20px;" class="red"></div>
+                            }
+                            else if (food.Column == j && food.Row == i)
+                            {
+                                <div style="width:20px;height:20px;">
+                                    <img src="@fruits[fruitIndex]" style="width:20px;height:20px;" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="width:20px;height:20px;"></div>
+                            }
+                         
+                        </td>
                         }
                     </tr>
                 }
@@ -89,8 +95,8 @@
     public string letter { get; set; } = "";
     public int[,] MapMatrix = new int[10, 10];
     public Coordinates food { get; set; }
-
     GameManager _gameManager { get; set; }
+
 
     protected ElementReference myDiv;  // set by the @ref attribute
 
@@ -104,7 +110,7 @@
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        AddScore(_gameManager.snake.pos, food);
+        AddScore(_gameManager.snake.Head.pos, food);
         if (firstRender)
             await JSRuntime.InvokeVoidAsync("SetFocusToElement", myDiv);
     }
@@ -125,6 +131,18 @@
             _gameManager.snake.MoveLeft();
         else if (e.Key == "ArrowRight")
             _gameManager.snake.MoveRight();
+        else if (e.Key == "e")
+        {
+            Snek.Shared.Entities.PowerUp powerUp = new Snek.Shared.Entities.PowerUp("SpeedBoost");
+            powerUp.Name = "SpeedBoost";
+            _gameManager.powerUpControl.UsePowerUp(_gameManager.snake, powerUp);
+            //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
+        }
+        else if (e.Key == "r")
+        {
+            _gameManager.powerUpControl.Discard(0);
+            //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
+        }
     }
 
     public void GenerateFood()
@@ -139,6 +157,7 @@
     {
         if (player.Column == food.Column && player.Row == food.Row)
         {
+            _gameManager.snake.Grow();
             Score++;
             GenerateFood();
         }
