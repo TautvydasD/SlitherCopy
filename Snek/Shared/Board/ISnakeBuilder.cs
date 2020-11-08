@@ -7,7 +7,9 @@ namespace Snek.Shared.Board
     public interface ISnakeBuilder
     {
         public void BuildHead(Coordinates pos);
-        public void BuildBody(List<Coordinates> posList);
+        //List<Coordinates> posList
+        public void BuildBody(Coordinates[] posArr);
+        //public void BuildBody(List<Coordinates> posList);
         public Snake Build();
     }
 }

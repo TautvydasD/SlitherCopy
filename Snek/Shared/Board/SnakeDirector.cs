@@ -11,11 +11,14 @@ namespace Snek.Shared.Board
         {
             _builder = builder;
         }
-        public void Construct(Coordinates headPos, List<Coordinates> bodyPosList)
+        //List<Coordinates> bodyPosList
+        //public void Construct(Coordinates headPos, List<Coordinates> bodyPosList)
+        public void Construct(Coordinates headPos, Coordinates[] bodyPosArr)
         {
             
             _builder.BuildHead(headPos);
-            _builder.BuildBody(bodyPosList);
+            //_builder.BuildBody(bodyPosList);
+            _builder.BuildBody(bodyPosArr);
         }
         public Snake GetConstructedSnake()
         {

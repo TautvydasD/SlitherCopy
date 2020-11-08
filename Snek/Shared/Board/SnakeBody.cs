@@ -7,6 +7,7 @@ namespace Snek.Shared.Board
     public class SnakeBody
     {
         public List<Coordinates> posList { get; set; } 
+       public Coordinates[] posArr { get; set; }
 
         //public SnakeBody()
         //{
@@ -15,12 +16,14 @@ namespace Snek.Shared.Board
 
         public SnakeBody()
         {
-            posList = new List<Coordinates>();
+            //posList = new List<Coordinates>();
+            posArr = new Coordinates[] { };
         }
 
         public void Add(int x, int y)
         {
-            posList.Add(new Coordinates(x, y));
+            //posList.Add(new Coordinates(x, y));
+            
         }
 
     }

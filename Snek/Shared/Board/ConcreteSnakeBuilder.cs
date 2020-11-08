@@ -12,11 +12,13 @@ namespace Snek.Shared.Board
         {
             snake.Head =  new SnakeHead(pos.Row, pos.Column);
         }
-
-        public void BuildBody(List<Coordinates> posList)
+        //List<Coordinates> posList
+        //public void BuildBody(List<Coordinates> posList)
+        public void BuildBody(Coordinates[] posArr)
         {
             snake.Body = new SnakeBody();
-            snake.Body.posList = posList;
+            //snake.Body.posList = posList;
+            snake.Body.posArr = posArr;
         }
 
         public Snake Build()

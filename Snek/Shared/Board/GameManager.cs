@@ -89,7 +89,7 @@ namespace Snek.Shared.Board
                 snake.Head.pos.Row = -1;
             else if (snake.Head.pos.Row < 0)
                 snake.Head.pos.Row = 10;
-            foreach(var item in snake.Body.posList)
+            foreach(var item in snake.Body.posArr)
             {
                 if (item.Column > 9)
                     item.Column = -1;
@@ -115,10 +115,11 @@ namespace Snek.Shared.Board
         }
         private void ResetGameObjects()
         {
-            Coordinates pos = new Coordinates(1, 1);
-            List<Coordinates> posList = new List<Coordinates>{pos};
+            Coordinates pos = new Coordinates(3, 0);
+            List<Coordinates> posList = new List<Coordinates>();
+            Coordinates[] posArr = new Coordinates[] { };
             director = new SnakeDirector(new ConcreteSnakeBuilder());
-            director.Construct(pos, posList);
+            director.Construct(pos, posArr);
             snake = director.GetConstructedSnake();
             //snake = new Snake(1, 1);
             //pos = new Coordinates(1, 1);
