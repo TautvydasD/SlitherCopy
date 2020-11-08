@@ -97,6 +97,7 @@
     public Coordinates food { get; set; }
     GameManager _gameManager { get; set; }
 
+
     protected ElementReference myDiv;  // set by the @ref attribute
 
     protected override void OnInitialized()
@@ -130,6 +131,18 @@
             _gameManager.snake.MoveLeft();
         else if (e.Key == "ArrowRight")
             _gameManager.snake.MoveRight();
+        else if (e.Key == "e")
+        {
+            Snek.Shared.Entities.PowerUp powerUp = new Snek.Shared.Entities.PowerUp("SpeedBoost");
+            powerUp.Name = "SpeedBoost";
+            _gameManager.powerUpControl.UsePowerUp(_gameManager.snake, powerUp);
+            //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
+        }
+        else if (e.Key == "r")
+        {
+            _gameManager.powerUpControl.Discard(0);
+            //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
+        }
     }
 
     public void GenerateFood()

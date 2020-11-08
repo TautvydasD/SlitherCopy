@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Snek.Shared.Classes;
 
 namespace Snek.Shared.Board
 {
@@ -11,7 +12,7 @@ namespace Snek.Shared.Board
     {
         private readonly int _speed = 100;
         public event EventHandler MainLoopCompleted;
-
+        public Control powerUpControl = new Control();
 
         //public bool IsMovingUp { get; set; } = false;
         //public bool IsMovingDown { get; set; } = false;
@@ -37,7 +38,11 @@ namespace Snek.Shared.Board
                 //MovingDirection();
                 snake.MovingDirection();
                 MainLoopCompleted?.Invoke(this, EventArgs.Empty);
-                if(snake.Body.posArr.Length > 10)
+                if (snake.SpeedBoost == true)
+                {
+                    snake.SetMovementSpeed(new MoveFast());
+                }
+                else if(snake.Body.posArr.Length > 10)
                 {
                     snake.SetMovementSpeed(new MoveSlow());
                 }

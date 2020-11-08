@@ -12,6 +12,7 @@ namespace Snek.Shared.Board
         public bool IsMovingRight { get; set; } = false;
         public bool IsMovingLeft { get; set; } = false;
         //public int SnakeLength { get; set; }
+        public bool SpeedBoost { get; set; } = false;
 
         public IMovement Movement { get; set; }
 
@@ -143,6 +144,27 @@ namespace Snek.Shared.Board
                 IsMovingUp = false;
             }
 
+        }
+        public void UsePowerUp(string PowerUp)
+        {
+            switch (PowerUp)
+            {
+                case "CoinBox":; break;
+                case "DoublePoints":; break;
+                case "Shrinker":; break;
+                case "SpeedBoost": SpeedBoost = true; break;
+            }
+        }
+
+        public void DiscardPowerUp(string PowerUp)
+        {
+            switch (PowerUp)
+            {
+                case "CoinBox":; break;
+                case "DoublePoints":; break;
+                case "Shrinker":; break;
+                case "SpeedBoost": SpeedBoost = false; break;
+            }
         }
     }
 }
