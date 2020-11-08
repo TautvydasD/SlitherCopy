@@ -78,7 +78,7 @@
     public string[] fruits { get; set; } = { "apple.png", "cherry2.png", "pineapple.png",
                                              "rainbowApple.png", "spoiledApple2.png",
                                              "shrink.png", "cash.png"};
-    
+
     public Factory factory = null;
     public PowerUp GlobalPower { get; set; } = null;
     public int fruitIndex { get; set; }
@@ -124,9 +124,11 @@
             _gameManager.snake.MoveRight();
         else if (e.Key == "e")
         {
-            Snek.Shared.Entities.PowerUp powerUp = new Snek.Shared.Entities.PowerUp("SpeedBoost");
-            powerUp.Name = "SpeedBoost";
-            _gameManager.powerUpControl.UsePowerUp(_gameManager.snake, powerUp);
+            //Snek.Shared.Entities.PowerUp powerUp = new Snek.Shared.Entities.PowerUp("SpeedBoost");
+            //powerUp.Name = "SpeedBoost";
+            factory = new SpeedFactory();
+            GlobalPower = factory.CreatePowerUp();
+            _gameManager.powerUpControl.UsePowerUp(_gameManager.snake, GlobalPower);
             //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
         }
         else if (e.Key == "r")

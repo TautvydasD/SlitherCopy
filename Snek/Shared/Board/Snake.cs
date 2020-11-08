@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Snek.Shared.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Snek.Shared.Entities.Consumables;
 
 namespace Snek.Shared.Board
 {
@@ -145,25 +147,39 @@ namespace Snek.Shared.Board
             }
 
         }
-        public void UsePowerUp(string PowerUp)
+        public void UsePowerUp(PowerUp powerUp)
         {
-            switch (PowerUp)
+            if(powerUp is SpeedBoost)
             {
-                case "CoinBox":; break;
-                case "DoublePoints":; break;
-                case "Shrinker":; break;
-                case "SpeedBoost": SpeedBoost = true; break;
+                SpeedBoost = true;
+            }
+            if (powerUp is DoublePoints)
+            {
+            }
+            if (powerUp is CoinBox)
+            {
+            }
+            if (powerUp is Shrink)
+            {
+
             }
         }
 
-        public void DiscardPowerUp(string PowerUp)
+        public void DiscardPowerUp(PowerUp powerUp)
         {
-            switch (PowerUp)
+            if (powerUp is SpeedBoost)
             {
-                case "CoinBox":; break;
-                case "DoublePoints":; break;
-                case "Shrinker":; break;
-                case "SpeedBoost": SpeedBoost = false; break;
+                SpeedBoost = false;
+            }
+            if (powerUp is DoublePoints)
+            {
+            }
+            if (powerUp is CoinBox)
+            {
+            }
+            if (powerUp is Shrink)
+            {
+
             }
         }
     }

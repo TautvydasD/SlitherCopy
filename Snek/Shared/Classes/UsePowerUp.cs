@@ -18,12 +18,12 @@ namespace Snek.Shared.Classes
         }
         public override void Discard()
         {
-            _snake.DiscardPowerUp(_powerUp.Name);
+            _snake.DiscardPowerUp(_powerUp);
         }
 
         public override void Use()
         {
-            _snake.UsePowerUp(_powerUp.Name);
+            _snake.UsePowerUp(_powerUp);
         }
     }
 }
