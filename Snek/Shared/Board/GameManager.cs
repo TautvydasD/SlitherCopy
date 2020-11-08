@@ -9,8 +9,9 @@ namespace Snek.Shared.Board
 {
     public class GameManager
     {
-        private readonly int _speed = 200;
+        private readonly int _speed = 100;
         public event EventHandler MainLoopCompleted;
+
 
         //public bool IsMovingUp { get; set; } = false;
         //public bool IsMovingDown { get; set; } = false;
@@ -21,6 +22,7 @@ namespace Snek.Shared.Board
 
         //public Coordinates pos { get; private set; }
         public Snake snake { get; set; }
+        public SnakeDirector director { get; set; }
         public GameManager()
         {
             ResetGameObjects();
@@ -35,7 +37,16 @@ namespace Snek.Shared.Board
                 //MovingDirection();
                 snake.MovingDirection();
                 MainLoopCompleted?.Invoke(this, EventArgs.Empty);
-                await Task.Delay(_speed);
+                if(snake.Body.posArr.Length > 10)
+                {
+                    snake.SetMovementSpeed(new MoveSlow());
+                }
+                else
+                {
+                    snake.SetMovementSpeed(new MoveNormal());
+                }
+                //await Task.Delay(_speed);
+                await Task.Delay(snake.Speed());
             }
         }
         //public void MovingDirection()
@@ -80,14 +91,36 @@ namespace Snek.Shared.Board
         //}
         public void Transition()
         {
-            if (snake.pos.Column > 9)
-                snake.pos.Column = -1;
-            else if (snake.pos.Column < 0)
-                snake.pos.Column = 10;
-            else if (snake.pos.Row > 9)
-                snake.pos.Row = -1;
-            else if (snake.pos.Row < 0)
-                snake.pos.Row = 10;
+            if (snake.Head.pos.Column > 9)
+                snake.Head.pos.Column = -1;
+            else if (snake.Head.pos.Column < 0)
+                snake.Head.pos.Column = 10;
+            else if (snake.Head.pos.Row > 9)
+                snake.Head.pos.Row = -1;
+            else if (snake.Head.pos.Row < 0)
+                snake.Head.pos.Row = 10;
+            //foreach(var item in snake.Body.posArr)
+            //{
+            //    if (item.Column > 9)
+            //        item.Column = -1;
+            //    else if (item.Column < 0)
+            //        item.Column = 10;
+            //    else if (item.Row > 9)
+            //        item.Row = -1;
+            //    else if (item.Row < 0)
+            //        item.Row = 10;
+            //}
+            for (int i = 0; i < snake.Body.posArr.Length; i++)
+            {
+                if (snake.Body.posArr[i].Column > 9)
+                    snake.Body.posArr[i].Column = -1;
+                else if (snake.Body.posArr[i].Column < 0)
+                    snake.Body.posArr[i].Column = 10;
+                else if (snake.Body.posArr[i].Row > 9)
+                    snake.Body.posArr[i].Row = -1;
+                else if (snake.Body.posArr[i].Row < 0)
+                    snake.Body.posArr[i].Row = 10;
+            }
         }
         public void StartGame()
         {
@@ -103,7 +136,13 @@ namespace Snek.Shared.Board
         }
         private void ResetGameObjects()
         {
-            snake = new Snake(1, 1);
+            Coordinates pos = new Coordinates(3, 0);
+            List<Coordinates> posList = new List<Coordinates>();
+            Coordinates[] posArr = new Coordinates[] { };
+            director = new SnakeDirector(new ConcreteSnakeBuilder());
+            director.Construct(pos, posArr);
+            snake = director.GetConstructedSnake();
+            //snake = new Snake(1, 1);
             //pos = new Coordinates(1, 1);
         }
     }
