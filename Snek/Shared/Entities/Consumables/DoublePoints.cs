@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Snek.Shared.Entities.Consumables
 {
-    class SpeedBoost : PowerUp
+    class DoublePoints : PowerUp
     {
-        private int _duration = 5000;
-        private string _color = "speed.png";
-        public SpeedBoost() : base()
+        private int _duration = 5;
+        private string _color = "doublePoints2.png";
+        public DoublePoints() : base()
         {
             
         }
-        // public override async void InvokeEffect(int speed)
+
+        // public override void InvokeEffect(int speed)
         // {
-        //     speed = 50;
-        //     await Task.Delay(_duration);
-        //     speed = 200;
+        //     throw new NotImplementedException();
         // }
         public override int Duration
         { 

@@ -1,18 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Snek.Shared.Board;
 
 namespace Snek.Shared.Entities
 {
-    public class Food
+    public abstract class Food
     {
-        public int LifeCount { get; private set; }
-        public string Color { get; private set; }
-        public string Name { get; set; }
+        public abstract int LifeCount { get;}
+        public abstract string Image { get;}
 
-        public Food(string name)
+        public Coordinates Position { get; }
+        public Food()
         {
-            name = Name;
+            Position = GeneratePosition();
         }
+
+        private Coordinates GeneratePosition()
+        {
+            var rnd = new Random();
+            var row = rnd.Next(0,9);
+            var column = rnd.Next(0,9);
+            return new Coordinates(row, column);
+
+        }
+
     }
 }

@@ -10,7 +10,8 @@ namespace Snek.Shared.Board
 {
     public class GameManager
     {
-        private readonly int _speed = 100;
+        public int _speed { get; set; } = 200;
+        // private readonly int _speed = 200;
         public event EventHandler MainLoopCompleted;
         public Control powerUpControl = new Control();
 

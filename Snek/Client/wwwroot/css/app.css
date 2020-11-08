@@ -200,28 +200,120 @@ app {
         text-align: center !important;
     }
 
-    .red {
-        background-color: red;
-    }
+}
+.main-menu-background {
+    width: 50%;
+    margin: 0 auto; 
+    width: 1280px; 
+    height: 720px; 
+    justify-content: center;
+    background-image: url('grass.jpg');
+}
 
-    .green {
-        background-color: green;
-    }
+.main-button-background {
+    width: 700px;
+    margin-left: auto;
+    margin-right: auto; 
+}
 
-    .yellow {
-        background-color: yellow;
-    }
-    .cherry {
-        width: 320px;
-        height: 400px;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-image: url(../cherry2.png);
-    }
+.main-buttons {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
 
-    #cher {
-        background: url(../cherry2.png) 0 0;
-        width: 35px;
-        height: 35px;
-    }
+.main-button-distance {
+    margin:5px
+}
+
+.main-button-sized {
+    height:50px;
+    width:130px
+}
+
+
+.cell-size {
+    width:20px;
+    height:20px;
+}
+
+.game {
+    width:1000px;
+    height:500px;
+    display:flex;
+}
+
+.margin-style {
+    margin:auto;
+}
+
+.highscore-table {
+    position:relative;
+    left:30px;
+    top:30px;
+    width:200px;
+    height:400px;
+    border: 5px solid green;
+    background:rgba(60,179,113,0.9)
+}
+
+.joy-stick-area {
+    display:block;
+    height:200px;
+    width:200px;
+    margin:auto;
+    position:relative;
+    border: 5px solid green;
+    background:rgba(60,179,113,0.9);
+}
+
+.game-button {
+    height: 60px;
+    width: 60px;
+    position: absolute; 
+}
+
+.button-left {
+    top: 34%;
+    left: 0px
+}
+
+.button-right {
+    top: 34%;
+    right: 0px
+}
+
+.button-up {
+    top: 0px;
+    left:35%
+}
+
+.button-down {
+    left:35%;
+    bottom:0px
+}
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: green;
+}
+
+.yellow {
+    background-color: yellow;
+}
+.cherry {
+    width: 320px;
+    height: 400px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(../cherry2.png);
+}
+
+#cher {
+    background: url(../cherry2.png) 0 0;
+    width: 35px;
+    height: 35px;
 }
