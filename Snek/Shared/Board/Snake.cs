@@ -11,6 +11,9 @@ namespace Snek.Shared.Board
         public bool IsMovingDown { get; set; } = false;
         public bool IsMovingRight { get; set; } = false;
         public bool IsMovingLeft { get; set; } = false;
+        //public int SnakeLength { get; set; }
+
+        public IMovement Movement { get; set; }
 
         public SnakeHead Head { get; set; }
         public SnakeBody Body { get; set; }
@@ -20,6 +23,16 @@ namespace Snek.Shared.Board
         public Snake(int X, int Y)
         {
             Head.pos = new Coordinates(X, Y);
+        }
+
+        public void SetMovementSpeed(IMovement movement)
+        {
+            Movement = movement;
+        }
+
+        public int Speed()
+        {
+            return Movement.Move();
         }
         public void MovingDirection()
         {

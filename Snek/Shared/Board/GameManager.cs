@@ -12,6 +12,7 @@ namespace Snek.Shared.Board
         private readonly int _speed = 100;
         public event EventHandler MainLoopCompleted;
 
+
         //public bool IsMovingUp { get; set; } = false;
         //public bool IsMovingDown { get; set; } = false;
         //public bool IsMovingRight { get; set; } = false;
@@ -36,7 +37,16 @@ namespace Snek.Shared.Board
                 //MovingDirection();
                 snake.MovingDirection();
                 MainLoopCompleted?.Invoke(this, EventArgs.Empty);
-                await Task.Delay(_speed);
+                if(snake.Body.posArr.Length > 10)
+                {
+                    snake.SetMovementSpeed(new MoveSlow());
+                }
+                else
+                {
+                    snake.SetMovementSpeed(new MoveNormal());
+                }
+                //await Task.Delay(_speed);
+                await Task.Delay(snake.Speed());
             }
         }
         //public void MovingDirection()

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Snek.Shared.Entities
+namespace Snek.Shared.Board
 {
-    interface IMovement
+    public interface IMovement
     {
-        public void Move();
+        public int Move();
     }
 }
