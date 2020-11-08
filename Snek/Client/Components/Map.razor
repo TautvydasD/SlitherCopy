@@ -24,32 +24,38 @@
                     <tr>
                         @for (int j = 0; j < MapMatrix.GetLength(1); j++)
                         {
-                            <td class="snake-tile">
-                                @if (_gameManager.snake.Head.pos.Column == j && _gameManager.snake.Head.pos.Row == i)
-                                {
-                                    <div class="cell-size green"></div>
-                                }
-                                else if (_gameManager.snake.Body.posArr.Any(pos => pos.Row == i && pos.Column == j))
-                                {
-                                    <div class="cell-size red"></div>
-                                }
-                                else if (food.Column == j && food.Row == i)
-                                {
-                                    <div class="cell-size">
-                                        <img class="cell-size" src="@fruits[fruitIndex]" />
-                                    </div>
-                                }
-                                else if (GlobalPower.Position.Column == j && GlobalPower.Position.Row == i)
-                                {
-                                    <div class="cell-size">
-                                        <img class="cell-size" src="@GlobalPower.Color" />
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="cell-size"></div>
-                                }
-                            </td>
+                        <td class="snake-tile">
+                            @if (_gameManager.snake.Head.pos.Column == j && _gameManager.snake.Head.pos.Row == i)
+                            {
+                                <div class="cell-size green"></div>
+                            }
+                            else if (_gameManager.snake.Body.posArr.Any(pos => pos.Row == i && pos.Column == j))
+                            {
+                                <div class="cell-size red"></div>
+                            }
+                            else if (food.Column == j && food.Row == i)
+                            {
+                                <div class="cell-size">
+                                    <img class="cell-size" src="@fruits[fruitIndex]" />
+                                </div>
+                            }
+                            else if (GlobalPower.Position.Column == j && GlobalPower.Position.Row == i)
+                            {
+                                <div class="cell-size">
+                                    <img class="cell-size" src="@GlobalPower.Color" />
+                                </div>
+                            }
+                            else if (bomb.Position.Column == j && bomb.Position.Row == i)
+                            {
+                                <div class="cell-size">
+                                    <img class="cell-size" src="@bomb.Image" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="cell-size"></div>
+                            }
+                        </td>
                         }
                     </tr>
                 }
@@ -88,6 +94,7 @@
     public Coordinates food { get; set; }
     public Coordinates powerUp { get; set; }
     GameManager _gameManager { get; set; }
+    public Food bomb = null;
 
 
     protected ElementReference myDiv;  // set by the @ref attribute
@@ -97,6 +104,7 @@
         _gameManager = new GameManager();
         _gameManager.snake.MoveRight();
         Console.WriteLine("Im being generated again");
+        GenerateBomb();
         GenerateFood();
         GeneratePowerUp();
         _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
@@ -105,6 +113,7 @@
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         //Console.WriteLine($"Y:{food.Row}; X:{food.Column}");
+        DecreaseScore(_gameManager.snake.Head.pos, bomb);
         AddScore(_gameManager.snake.Head.pos, food);
         InvokePowerUp(_gameManager.snake.Head.pos, powerUp);
         if (firstRender)
@@ -137,7 +146,10 @@
             //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
         }
     }
-
+    public void GenerateBomb()
+    {
+        bomb = new BombAdapter();
+    }
     public void GenerateFood()
     {
         Random rnd = new Random();
@@ -166,6 +178,14 @@
                 break;
         }
         GlobalPower = factory.CreatePowerUp();
+    }
+    public void DecreaseScore(Coordinates player, Food bomb)
+    {
+        if (player.Column == bomb.Position.Column && player.Row == bomb.Position.Row)
+        {
+            Score+=bomb.LifeCount;
+            GenerateBomb();
+        }
     }
     public void AddScore(Coordinates player, Coordinates food)
     {
