@@ -24,6 +24,11 @@ namespace Snek.Shared.Entities
             return new Coordinates(row, column);
 
         }
+        
+        public virtual void ToConsole()
+        {
+            Console.WriteLine("I am a fruit");
+        }
 
     }
 }

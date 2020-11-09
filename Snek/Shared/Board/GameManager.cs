@@ -10,19 +10,11 @@ namespace Snek.Shared.Board
 {
     public class GameManager
     {
-        public int _speed { get; set; } = 200;
-        // private readonly int _speed = 200;
         public event EventHandler MainLoopCompleted;
         public Control powerUpControl = new Control();
 
-        //public bool IsMovingUp { get; set; } = false;
-        //public bool IsMovingDown { get; set; } = false;
-        //public bool IsMovingRight { get; set; } = false;
-        //public bool IsMovingLeft { get; set; } = false;
-
         public bool IsRunning { get; private set; } = false;
 
-        //public Coordinates pos { get; private set; }
         public Snake snake { get; set; }
         public SnakeDirector director { get; set; }
         public GameManager()
@@ -36,7 +28,6 @@ namespace Snek.Shared.Board
             while (IsRunning)
             {
                 Transition();
-                //MovingDirection();
                 snake.MovingDirection();
                 MainLoopCompleted?.Invoke(this, EventArgs.Empty);
                 if (snake.SpeedBoost == true)
@@ -51,7 +42,6 @@ namespace Snek.Shared.Board
                 {
                     snake.SetMovementSpeed(new MoveNormal());
                 }
-                //await Task.Delay(_speed);
                 await Task.Delay(snake.Speed());
             }
         }
@@ -65,17 +55,6 @@ namespace Snek.Shared.Board
                 snake.Head.pos.Row = -1;
             else if (snake.Head.pos.Row < 0)
                 snake.Head.pos.Row = 10;
-            //foreach(var item in snake.Body.posArr)
-            //{
-            //    if (item.Column > 9)
-            //        item.Column = -1;
-            //    else if (item.Column < 0)
-            //        item.Column = 10;
-            //    else if (item.Row > 9)
-            //        item.Row = -1;
-            //    else if (item.Row < 0)
-            //        item.Row = 10;
-            //}
             for (int i = 0; i < snake.Body.posArr.Length; i++)
             {
                 if (snake.Body.posArr[i].Column > 9)
@@ -108,8 +87,6 @@ namespace Snek.Shared.Board
             director = new SnakeDirector(new ConcreteSnakeBuilder());
             director.Construct(pos, posArr);
             snake = director.GetConstructedSnake();
-            //snake = new Snake(1, 1);
-            //pos = new Coordinates(1, 1);
         }
     }
 }

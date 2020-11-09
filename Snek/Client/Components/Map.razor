@@ -1,6 +1,7 @@
 @using Snek.Shared.Board;
 @using Snek.Shared;
 @using Snek.Shared.Entities;
+@using Snek.Shared.Entities.Consumables;
 @using System.Linq;
 
 @inject IJSRuntime JSRuntime;
@@ -33,10 +34,22 @@
                             {
                                 <div class="cell-size red"></div>
                             }
-                            else if (food.Column == j && food.Row == i)
+                            @* else if (food.Column == j && food.Row == i)
                             {
                                 <div class="cell-size">
                                     <img class="cell-size" src="@fruits[fruitIndex]" />
+                                </div>
+                            } *@
+                            else if (mapFruit.Position.Row == i && mapFruit.Position.Column == j)
+                            {
+                                <div class="cell-size">
+                                    <img class="cell-size" src="@mapFruit.Image" />
+                                </div>
+                            }
+                            else if (mapPowerUp.Position.Row == i && mapPowerUp.Position.Column == j )
+                            {
+                                <div class="cell-size">
+                                    <img class="cell-size" src="@mapPowerUp.Color" />
                                 </div>
                             }
                             else if (GlobalPower.Position.Column == j && GlobalPower.Position.Row == i)
@@ -49,6 +62,12 @@
                             {
                                 <div class="cell-size">
                                     <img class="cell-size" src="@bomb.Image" />
+                                </div>
+                            }
+                            else if (appleDecorator.Position.Column == j && appleDecorator.Position.Row == i)
+                            {
+                                <div class="cell-size">
+                                    <img class="cell-size" src="@appleDecorator.Image" />
                                 </div>
                             }
                             else
@@ -96,6 +115,17 @@
     GameManager _gameManager { get; set; }
     public Food bomb = null;
 
+    public string season = "summer";
+    public IMap seasonMap = null;
+    //public IMap summer = new SummerMapFactory();
+    //public IMap autumn = new AutumnMapFactory();
+    //public IMap winter = new WinterMapFactory();
+
+    public Food mapFruit = null;
+    public PowerUp mapPowerUp = null;
+
+    public Food apple = null;
+    public AppleDecorator appleDecorator = null;
 
     protected ElementReference myDiv;  // set by the @ref attribute
 
@@ -103,10 +133,13 @@
     {
         _gameManager = new GameManager();
         _gameManager.snake.MoveRight();
-        Console.WriteLine("Im being generated again");
+        Console.WriteLine("Awww, here we go again!");
+        InitialiseMap();
         GenerateBomb();
         GenerateFood();
-        GeneratePowerUp();
+        GenerateGlobalPowerUp();
+        GenerateMapPowerUp();
+        GenerateApple();
         _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
     }
 
@@ -114,8 +147,8 @@
     {
         //Console.WriteLine($"Y:{food.Row}; X:{food.Column}");
         DecreaseScore(_gameManager.snake.Head.pos, bomb);
-        AddScore(_gameManager.snake.Head.pos, food);
-        InvokePowerUp(_gameManager.snake.Head.pos, powerUp);
+        AddScore(_gameManager.snake.Head.pos);
+        InvokePowerUp(_gameManager.snake.Head.pos);
         if (firstRender)
             await JSRuntime.InvokeVoidAsync("SetFocusToElement", myDiv);
     }
@@ -146,20 +179,65 @@
             //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
         }
     }
+    public void InitialiseMap()
+    {
+        switch(season)
+        {
+            case "summer":
+                seasonMap = new SummerMapFactory();
+                break;
+            case "autumn":
+                seasonMap = new AutumnMapFactory();
+                break;
+            case "winter":
+                seasonMap = new WinterMapFactory();
+                break;
+        }
+    }
     public void GenerateBomb()
     {
         bomb = new BombAdapter();
     }
     public void GenerateFood()
     {
-        Random rnd = new Random();
-        fruitIndex = rnd.Next(0, 7);
-        int row = rnd.Next(0, 9);
-        int column = rnd.Next(0, 9);
-        food = new Coordinates(row, column);
+        mapFruit = seasonMap.CreateFood();
+        //Random rnd = new Random();
+        //fruitIndex = rnd.Next(0, 7);
+        //int row = rnd.Next(0, 9);
+        //int column = rnd.Next(0, 9);
+        //food = new Coordinates(row, column);
         //food = powerUp.Column == column && powerUp.Row == row ? new Coordinates(rnd.Next(0, 9), rnd.Next(0, 9)) : new Coordinates(row, column);
     }
-    public void GeneratePowerUp()
+
+    public void GenerateApple()
+    {
+        var rnd = new Random();
+        apple = new Apple();
+        var appleIndex = rnd.Next(0,3);
+        switch(appleIndex)
+        {
+            case 0:
+                GreenApple green = new GreenApple(apple);
+                PoisonApple poisoned = new PoisonApple(green);
+                poisoned.ToConsole();
+                appleDecorator = poisoned;
+                break;
+            case 1:
+                RainbowApple rainbow = new RainbowApple(apple);
+                GreenApple greener = new GreenApple(rainbow);
+                greener.ToConsole();
+                appleDecorator = greener;
+                break;
+            case 2:
+                appleDecorator = new PoisonApple(appleDecorator);
+                break;
+            default:
+                appleDecorator = new GreenApple(appleDecorator);
+                break;
+        }
+
+    }
+    public void GenerateGlobalPowerUp()
     {
         Random rnd = new Random();
         var factoryIndex =  rnd.Next(0, 2);
@@ -179,6 +257,10 @@
         }
         GlobalPower = factory.CreatePowerUp();
     }
+    public void GenerateMapPowerUp()
+    {
+        mapPowerUp = seasonMap.CreatePowerUp();
+    }
     public void DecreaseScore(Coordinates player, Food bomb)
     {
         if (player.Column == bomb.Position.Column && player.Row == bomb.Position.Row)
@@ -187,21 +269,31 @@
             GenerateBomb();
         }
     }
-    public void AddScore(Coordinates player, Coordinates food)
+    public void AddScore(Coordinates player)
     {
-        if (player.Column == food.Column && player.Row == food.Row)
+        if (player.Column == mapFruit.Position.Column && player.Row == mapFruit.Position.Row)
         {
             _gameManager.snake.Grow();
             Score++;
             GenerateFood();
         }
+        else if (player.Column == appleDecorator.Position.Column && player.Row == appleDecorator.Position.Row)
+        {
+            _gameManager.snake.Grow();
+            Score++;
+            GenerateApple();
+        }
     }
-    public void InvokePowerUp(Coordinates player, Coordinates powerUp)
+    public void InvokePowerUp(Coordinates player)
     {
         if (player.Column == GlobalPower.Position.Column && player.Row == GlobalPower.Position.Row)
         {
-            GlobalPower.InvokeEffect(() =>_gameManager._speed, x => _gameManager._speed = x);
-            GeneratePowerUp();
+            GlobalPower.InvokeEffect(_gameManager.snake);
+            GenerateGlobalPowerUp();
+        }
+        else if (player.Column == mapPowerUp.Position.Column && player.Row == mapPowerUp.Position.Row)
+        {
+            GenerateMapPowerUp();
         }
     }
 }

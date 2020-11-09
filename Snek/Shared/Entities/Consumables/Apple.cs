@@ -5,7 +5,7 @@ using Snek.Shared.Board;
 
 namespace Snek.Shared.Entities.Consumables
 {
-    class Apple : Food
+    public class Apple : Food
     {
         private int _lifeCount = 1;
         private string _image = "apple.png";
@@ -20,6 +20,11 @@ namespace Snek.Shared.Entities.Consumables
         public override string Image
         { 
             get { return _image; }
+        }
+
+        public override void ToConsole()
+        {
+            Console.WriteLine("I'm a cute apple");
         }
     }
 }

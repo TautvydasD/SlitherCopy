@@ -16,13 +16,17 @@ namespace Snek.Shared.Entities
         {
             Position = GeneratePosition();
         }
-        public async void InvokeEffect(Func<int> getter, Action<int> setter)
+        public async void InvokeEffect(Snake snake)
         {
-            var speed = getter();
-            setter(speed = 50);
+            snake.SetMovementSpeed(new MoveFast());
             await Task.Delay(5000);
-            setter(speed = 200);
+            snake.SetMovementSpeed(new MoveNormal());
         }
+        // public async void InvokeEffect(Snake snake)
+        // {
+        //     snake.SetMovementSpeed()
+        //     await Task.Delay(5000);
+        // }
         private Coordinates GeneratePosition()
         {
             var rnd = new Random();

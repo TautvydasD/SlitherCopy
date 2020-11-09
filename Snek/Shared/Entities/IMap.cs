@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Snek.Shared.Entities
 {
-    interface IMap
+    public interface IMap
     {
         Food CreateFood();
         PowerUp CreatePowerUp();

@@ -7,7 +7,7 @@ namespace Snek.Shared.Entities
 {
     public class Bomb
     {
-        public string Image = "doublePoints.png";
+        public string Image = "bomb.png";
         public Bomb()
         {
 
