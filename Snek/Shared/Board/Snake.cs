@@ -9,10 +9,6 @@ namespace Snek.Shared.Board
 {
     public class Snake
     {
-        public bool IsMovingUp { get; set; } = false;
-        public bool IsMovingDown { get; set; } = false;
-        public bool IsMovingRight { get; set; } = false;
-        public bool IsMovingLeft { get; set; } = false;
         //public int SnakeLength { get; set; }
         public bool SpeedBoost { get; set; } = false;
 
@@ -21,11 +17,17 @@ namespace Snek.Shared.Board
         public SnakeHead Head { get; set; }
         public SnakeBody Body { get; set; }
         public Coordinates pos { get; set; }
-        
-        public Snake() { }
+
+        private State _state = null;
+        public Snake() {
+            _state = new MovingRight();
+            _state.setSnake(this);
+        }
         public Snake(int X, int Y)
         {
             Head.pos = new Coordinates(X, Y);
+            _state = new MovingRight();
+            _state.setSnake(this);
         }
 
         public void SetMovementSpeed(IMovement movement)
@@ -39,62 +41,7 @@ namespace Snek.Shared.Board
         }
         public void MovingDirection()
         {
-            if (IsMovingUp) 
-            {
-                List<Coordinates> list = new List<Coordinates>(Body.posArr);
-                list.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
-                Body.posArr = list.ToArray();
-                //Body.posList.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
-                //Body.posList.RemoveAt(Body.posList.Count - 1);
-                //Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
-                //Body.posArr = Body.posArr.Take(Body.posArr.Count() - 1).ToArray();
-
-                list.RemoveAt(Body.posArr.Length - 1);
-                Body.posArr = list.ToArray();
-                Head.pos.Row--;
-            }
-            else if (IsMovingDown)
-            {
-                List<Coordinates> list = new List<Coordinates>(Body.posArr);
-                list.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
-                Body.posArr = list.ToArray();
-                //Body.posList.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
-                //Body.posList.RemoveAt(Body.posList.Count - 1);
-                //Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
-                //Body.posArr = Body.posArr.Take(Body.posArr.Count() - 1).ToArray();
-
-                list.RemoveAt(Body.posArr.Length - 1);
-                Body.posArr = list.ToArray();
-                Head.pos.Row++;
-            }
-            else if (IsMovingLeft)
-            {
-                List<Coordinates> list = new List<Coordinates>(Body.posArr);
-                list.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
-                Body.posArr = list.ToArray();
-                //Body.posList.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
-                //Body.posList.RemoveAt(Body.posList.Count - 1);
-                //Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
-                //Body.posArr = Body.posArr.Take(Body.posArr.Count() - 1).ToArray();
-
-                list.RemoveAt(Body.posArr.Length - 1);
-                Body.posArr = list.ToArray();
-                Head.pos.Column--;
-            }
-            else if (IsMovingRight)
-            {
-                List<Coordinates> list = new List<Coordinates>(Body.posArr);
-                list.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
-                Body.posArr = list.ToArray();
-                //Body.posList.Insert(0, new Coordinates(Head.pos.Row, Head.pos.Column));
-                //Body.posList.RemoveAt(Body.posList.Count - 1);
-                //Body.posArr = Body.posArr.Append(new Coordinates(Head.pos.Row, Head.pos.Column)).ToArray();
-                //Body.posArr = Body.posArr.Take(Body.posArr.Count() - 1).ToArray();
-
-                list.RemoveAt(Body.posArr.Length - 1);
-                Body.posArr = list.ToArray();
-                Head.pos.Column++;
-            }
+            _state.MovingDirection();
         }
 
         public void Grow()
@@ -105,47 +52,35 @@ namespace Snek.Shared.Board
         }
         public void MoveUp()
         {
-            if (!IsMovingDown)
+            if (_state.GetType() != typeof(MovingDown))
             {
-                IsMovingUp = true;
-                IsMovingDown = false;
-                IsMovingLeft = false;
-                IsMovingRight = false;
+                _state = new MovingUp();
+                _state.setSnake(this);
             }
-
         }
         public void MoveDown()
         {
-            if (!IsMovingUp)
+            if (_state.GetType() != typeof(MovingUp))
             {
-                IsMovingDown = true;
-                IsMovingUp = false;
-                IsMovingLeft = false;
-                IsMovingRight = false;
+                _state = new MovingDown();
+                _state.setSnake(this);
             }
-
         }
         public void MoveLeft()
         {
-            if (!IsMovingRight)
+            if (_state.GetType() != typeof(MovingRight))
             {
-                IsMovingLeft = true;
-                IsMovingRight = false;
-                IsMovingDown = false;
-                IsMovingUp = false;
+                _state = new MovingLeft();
+                _state.setSnake(this);
             }
-
         }
         public void MoveRight()
         {
-            if (!IsMovingLeft)
+            if (_state.GetType() != typeof(MovingLeft))
             {
-                IsMovingRight = true;
-                IsMovingLeft = false;
-                IsMovingDown = false;
-                IsMovingUp = false;
+                _state = new MovingRight();
+                _state.setSnake(this);
             }
-
         }
         public void UsePowerUp(PowerUp powerUp)
         {
