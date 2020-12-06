@@ -127,6 +127,10 @@
     public Food apple = null;
     public AppleDecorator appleDecorator = null;
 
+
+
+
+
     protected ElementReference myDiv;  // set by the @ref attribute
 
     protected override void OnInitialized()
@@ -146,8 +150,8 @@
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         //Console.WriteLine($"Y:{food.Row}; X:{food.Column}");
-        DecreaseScore(_gameManager.snake.Head.pos, bomb);
-        AddScore(_gameManager.snake.Head.pos);
+        //DecreaseScore(_gameManager.snake.Head.pos, bomb);
+        CountScore(_gameManager.snake.Head.pos);
         InvokePowerUp(_gameManager.snake.Head.pos);
         if (firstRender)
             await JSRuntime.InvokeVoidAsync("SetFocusToElement", myDiv);
@@ -269,19 +273,46 @@
             GenerateBomb();
         }
     }
-    public void AddScore(Coordinates player)
+    public void CountScore(Coordinates player)
     {
+        // Point Counter
+        PointCounter normalFood = new FoodPointCounter("food");
+        PointCounter poisonedFood = new PoisonFoodPointCounter("poison");
+        PointCounter specialFood = new SpecialFoodPointCounter("special");
+        PointCounter bombFood = new BombPointCounter("bomb");
+        PointCounter noFood = new NoFoodCounter("noPoints");
+
+
+        normalFood.SetNextChain(poisonedFood);
+        poisonedFood.SetNextChain(specialFood);
+        specialFood.SetNextChain(bombFood);
+        bombFood.SetNextChain(noFood);
+        noFood.SetNextChain(null);
+
+        PointCounter counter = normalFood;
+
         if (player.Column == mapFruit.Position.Column && player.Row == mapFruit.Position.Row)
         {
+            counter.Calculate(mapFruit.Image);
             _gameManager.snake.Grow();
-            Score++;
+            //Score++;
+            Score = counter.GetSum();
             GenerateFood();
         }
         else if (player.Column == appleDecorator.Position.Column && player.Row == appleDecorator.Position.Row)
         {
+            counter.Calculate(appleDecorator.Image);
             _gameManager.snake.Grow();
-            Score++;
+            //Score++;
+            Score = counter.GetSum();
             GenerateApple();
+        }
+        else if (player.Column == bomb.Position.Column && player.Row == bomb.Position.Row)
+        {
+            //Score += bomb.LifeCount;
+            counter.Calculate(bomb.Image);
+            Score = counter.GetSum();
+            GenerateBomb();
         }
     }
     public void InvokePowerUp(Coordinates player)
