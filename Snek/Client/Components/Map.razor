@@ -12,8 +12,67 @@
             <h4>Highscore</h4>
         </div>
         <div>
-            Player 1: @Score
+            Player 1: @(!(counter is null) ? counter.GetSum() : 0)
         </div>
+        <div>
+            <h4>Quests</h4>
+        </div>
+        @if (counter is not null)
+        {
+            <div>
+                @if (mainQuest.isCompleted(greenAppleCount, counter.GetSum(), _gameManager.snake.Body.posArr.Length + 1))
+                {
+                    <span style="color: #ff0000">@mainQuest.Display()</span>
+                }
+                else
+                {
+                    <span style="color: #000000">@mainQuest.Display()</span>
+                }
+
+            </div>
+            <div>
+                @if (pointQuest.isCompleted(greenAppleCount, counter.GetSum(), _gameManager.snake.Body.posArr.Length + 1))
+                {
+                    <span style="color: #ff0000">@pointQuest.Display()</span>
+                }
+                else
+                {
+                    <span style="color: #000000">@pointQuest.Display()</span>
+                }
+            </div>
+            <div>
+                @if (sideQuest.isCompleted(greenAppleCount, counter.GetSum(), _gameManager.snake.Body.posArr.Length + 1))
+                {
+                    <span style="color: #ff0000">@sideQuest.Display()</span>
+                }
+                else
+                {
+                    <span style="color: #000000">@sideQuest.Display()</span>
+                }
+            </div>
+            <div>
+                @if (foodQuest.isCompleted(greenAppleCount, counter.GetSum(), _gameManager.snake.Body.posArr.Length + 1))
+                {
+                    <span style="color: #ff0000">@foodQuest.Display()</span>
+                }
+                else
+                {
+                    <span style="color: #000000">@foodQuest.Display()</span>
+                }
+            </div>
+            <div>
+                @if (lengthQuest.isCompleted(greenAppleCount, counter.GetSum(), _gameManager.snake.Body.posArr.Length + 1))
+                {
+                    <span style="color: #ff0000">@lengthQuest.Display()</span>
+                }
+                else
+                {
+                    <span style="color: #000000">@lengthQuest.Display()</span>
+                }
+            </div>
+        }
+
+
     </div>
 
     <div class="row margin-style" @onclick="_gameManager.StartGame" @onkeydown="@HandleKeyUp" tabindex="0" @ref="myDiv">
@@ -103,7 +162,7 @@
     public string[] fruits { get; set; } = { "apple.png", "cherry2.png", "pineapple.png",
                                              "rainbowApple.png", "spoiledApple2.png",
                                              "shrink.png", "cash.png"};
-
+    public int greenAppleCount { get; set; } = 0;
     public Factory factory = null;
     public PowerUp GlobalPower { get; set; } = null;
     public int fruitIndex { get; set; }
@@ -114,6 +173,13 @@
     public Coordinates powerUp { get; set; }
     GameManager _gameManager { get; set; }
     public Food bomb = null;
+    public PointCounter counter = null;
+
+    public CompositeQuest mainQuest = null;
+    public FoodQuest foodQuest = null;
+    public PointsQuest pointQuest = null;
+    public CompositeQuest sideQuest = null;
+    public LengthQuest lengthQuest = null;
 
     public string season = "winter";
     public IMap seasonMap = null;
@@ -144,6 +210,7 @@
         GenerateGlobalPowerUp();
         GenerateMapPowerUp();
         GenerateApple();
+        HandeQuests();
         _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
     }
 
@@ -289,7 +356,7 @@
         bombFood.SetNextChain(noFood);
         noFood.SetNextChain(null);
 
-        PointCounter counter = normalFood;
+        counter = normalFood;
 
         if (player.Column == mapFruit.Position.Column && player.Row == mapFruit.Position.Row)
         {
@@ -301,6 +368,10 @@
         }
         else if (player.Column == appleDecorator.Position.Column && player.Row == appleDecorator.Position.Row)
         {
+            if(appleDecorator.Image == "greenApple.png")
+            {
+                greenAppleCount++;
+            }
             counter.Calculate(appleDecorator.Image);
             _gameManager.snake.Grow();
             //Score++;
@@ -315,6 +386,20 @@
             GenerateBomb();
         }
     }
+
+    public void HandeQuests()
+    {
+        mainQuest = new CompositeQuest("mainQuest");
+        //mainQuest.Add(new PointsQuest("pointsQuest"));
+        mainQuest.Add(pointQuest = new PointsQuest("Point Quest"));
+        sideQuest = new CompositeQuest("sideQuest");
+        sideQuest.Add(lengthQuest = new LengthQuest("Length Quest"));
+        sideQuest.Add(foodQuest = new FoodQuest("Food Quest"));
+        //sideQuest.Add(new FoodQuest("foodQuest"));
+        //sideQuest.Add(new LengthQuest("lengthQuest"));
+        mainQuest.Add(sideQuest);
+    }
+
     public void InvokePowerUp(Coordinates player)
     {
         if (player.Column == GlobalPower.Position.Column && player.Row == GlobalPower.Position.Row)
