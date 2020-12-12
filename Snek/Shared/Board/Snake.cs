@@ -11,6 +11,8 @@ namespace Snek.Shared.Board
     {
         //public int SnakeLength { get; set; }
         public bool SpeedBoost { get; set; } = false;
+        public bool Shrink { get; set; } = false;
+        public bool DoublePoints { get; set; } = false;
 
         public IMovement Movement { get; set; }
 
@@ -90,32 +92,32 @@ namespace Snek.Shared.Board
             }
             if (powerUp is DoublePoints)
             {
+                DoublePoints = true;
             }
             if (powerUp is CoinBox)
             {
             }
             if (powerUp is Shrink)
             {
-
+                Shrink = true;
             }
         }
 
-        public void DiscardPowerUp(PowerUp powerUp)
+        public IMemento Save()
         {
-            if (powerUp is SpeedBoost)
-            {
-                SpeedBoost = false;
-            }
-            if (powerUp is DoublePoints)
-            {
-            }
-            if (powerUp is CoinBox)
-            {
-            }
-            if (powerUp is Shrink)
-            {
+            return new Memento(SpeedBoost, Shrink, DoublePoints);
+        }
 
+        public void Restore(IMemento memento)
+        {
+            if (!(memento is Memento))
+            {
+                throw new Exception("Unknown memento class " + memento.ToString());
             }
+
+            SpeedBoost = memento.getSpeedState();
+            Shrink = memento.getShrinkState();
+            DoublePoints = memento.getDoublePointsState();
         }
     }
 }

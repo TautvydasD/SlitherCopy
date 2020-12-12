@@ -7,6 +7,5 @@ namespace Snek.Shared.Classes
     abstract class ICommand
     {
         public abstract void Use();
-        public abstract void Discard();
     }
 }

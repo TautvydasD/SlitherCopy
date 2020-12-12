@@ -6,16 +6,28 @@ namespace Snek.Shared.Board
 {
     class Memento : IMemento
     {
-        Snake _state;
+        bool _speedState;
+        bool _shrinkState;
+        bool _doublePointsState;
 
-        Memento(Snake state)
+        public Memento(bool speed, bool shrink, bool doublePoints)
         {
-            _state = state;
+            _speedState = speed;
+            _shrinkState = shrink;
+            _doublePointsState = doublePoints;
         }
 
-        public override Snake getState()
+        public override bool getShrinkState()
         {
-            return _state;
+            return _shrinkState;
+        }
+        public override bool getSpeedState()
+        {
+            return _speedState;
+        }
+        public override bool getDoublePointsState()
+        {
+            return _doublePointsState;
         }
     }
 }

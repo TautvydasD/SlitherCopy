@@ -4,8 +4,10 @@ using System.Text;
 
 namespace Snek.Shared.Board
 {
-    abstract class IMemento
+    public abstract class IMemento
     {
-        public abstract Snake getState();
+        public abstract bool getSpeedState();
+        public abstract bool getShrinkState();
+        public abstract bool getDoublePointsState();
     }
 }
