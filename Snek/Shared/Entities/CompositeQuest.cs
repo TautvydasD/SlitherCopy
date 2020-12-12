@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Snek.Shared.Entities
@@ -36,11 +37,29 @@ namespace Snek.Shared.Entities
         }
         public override string Display()
         {
-            foreach(Quest quest in _children)
-            {
-                quest.Display();
-            }
+            //foreach(Quest quest in _children)
+            //{
+            //    quest.Display();
+            //}
             return "Quest " + Name + " : ";
+        }
+
+        public override IEnumerator<Quest> GetEnumerator()
+        {
+            var quests = new Stack<Quest>(new[] { this } );
+            while (quests.Any())
+            {
+                Quest quest = quests.Pop();
+                yield return quest;
+                var compositeQuest = quest as CompositeQuest;
+                if(compositeQuest != null)
+                {
+                    foreach(var q in compositeQuest._children)
+                    {
+                        quests.Push(q);
+                    }
+                }
+            }
         }
     }
 }

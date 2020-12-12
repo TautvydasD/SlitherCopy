@@ -38,5 +38,10 @@ namespace Snek.Shared.Entities
         {
             return "   --Score " + _pointsForCompletion + " points";
         }
+
+        public override IEnumerator<Quest> GetEnumerator()
+        {
+            yield break;
+        }
     }
 }

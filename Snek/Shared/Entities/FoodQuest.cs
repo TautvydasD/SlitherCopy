@@ -38,5 +38,10 @@ namespace Snek.Shared.Entities
         {
             return "   --Eat " + _foodForCompletion + " Green Apples ";
         }
+
+        public override IEnumerator<Quest> GetEnumerator()
+        {
+            yield break;
+        }
     }
 }

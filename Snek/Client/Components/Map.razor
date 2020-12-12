@@ -240,7 +240,7 @@
             //Snek.Shared.Entities.PowerUp powerUp = new Snek.Shared.Entities.PowerUp("SpeedBoost");
             //powerUp.Name = "SpeedBoost";
             factory = new SpeedFactory();
-            GlobalPower = factory.CreatePowerUp();
+            //GlobalPower = factory.CreatePowerUp();
             _gameManager.powerUpControl.UsePowerUp(_gameManager.snake, GlobalPower);
             //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
         }
@@ -391,13 +391,25 @@
     {
         mainQuest = new CompositeQuest("mainQuest");
         //mainQuest.Add(new PointsQuest("pointsQuest"));
-        mainQuest.Add(pointQuest = new PointsQuest("Point Quest"));
+
         sideQuest = new CompositeQuest("sideQuest");
         sideQuest.Add(lengthQuest = new LengthQuest("Length Quest"));
         sideQuest.Add(foodQuest = new FoodQuest("Food Quest"));
+
         //sideQuest.Add(new FoodQuest("foodQuest"));
         //sideQuest.Add(new LengthQuest("lengthQuest"));
         mainQuest.Add(sideQuest);
+        mainQuest.Add(pointQuest = new PointsQuest("Point Quest"));
+        foreach (Quest quest in mainQuest)
+        {
+            Console.WriteLine(quest.Display());
+        }
+        Console.WriteLine("Diffrent print ");
+        var enumerator = mainQuest.GetEnumerator();
+        while (enumerator.MoveNext())
+        {
+            Console.WriteLine(enumerator.Current.Display());
+        }
     }
 
     public void InvokePowerUp(Coordinates player)

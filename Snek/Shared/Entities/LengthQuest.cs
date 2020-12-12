@@ -36,5 +36,10 @@ namespace Snek.Shared.Entities
         {
             return "   --Get snake to length : " + _lengthForCompletion;
         }
+
+        public override IEnumerator<Quest> GetEnumerator()
+        {
+            yield break;
+        }
     }
 }
