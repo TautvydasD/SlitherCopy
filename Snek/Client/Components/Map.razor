@@ -19,57 +19,22 @@
         </div>
         @if (counter is not null)
         {
-            <div>
-                @if (mainQuest.isCompleted(greenAppleCount, counter.GetSum(), _gameManager.snake.Body.posArr.Length + 1))
-                {
-                    <span style="color: #ff0000">@mainQuest.Display()</span>
-                }
-                else
-                {
-                    <span style="color: #000000">@mainQuest.Display()</span>
-                }
+            @foreach (Quest quest in mainQuest)
+            {
+                <div>
+                    @if (quest.isCompleted(greenAppleCount, counter.GetSum(), _gameManager.snake.Body.posArr.Length + 1))
+                    {
+                        <span style="color: #ff0000">@quest.Display()</span>
+                    }
+                    else
+                    {
+                        <span style="color: #000000">@quest.Display()</span>
+                    }
 
-            </div>
-            <div>
-                @if (pointQuest.isCompleted(greenAppleCount, counter.GetSum(), _gameManager.snake.Body.posArr.Length + 1))
-                {
-                    <span style="color: #ff0000">@pointQuest.Display()</span>
-                }
-                else
-                {
-                    <span style="color: #000000">@pointQuest.Display()</span>
-                }
-            </div>
-            <div>
-                @if (sideQuest.isCompleted(greenAppleCount, counter.GetSum(), _gameManager.snake.Body.posArr.Length + 1))
-                {
-                    <span style="color: #ff0000">@sideQuest.Display()</span>
-                }
-                else
-                {
-                    <span style="color: #000000">@sideQuest.Display()</span>
-                }
-            </div>
-            <div>
-                @if (foodQuest.isCompleted(greenAppleCount, counter.GetSum(), _gameManager.snake.Body.posArr.Length + 1))
-                {
-                    <span style="color: #ff0000">@foodQuest.Display()</span>
-                }
-                else
-                {
-                    <span style="color: #000000">@foodQuest.Display()</span>
-                }
-            </div>
-            <div>
-                @if (lengthQuest.isCompleted(greenAppleCount, counter.GetSum(), _gameManager.snake.Body.posArr.Length + 1))
-                {
-                    <span style="color: #ff0000">@lengthQuest.Display()</span>
-                }
-                else
-                {
-                    <span style="color: #000000">@lengthQuest.Display()</span>
-                }
-            </div>
+                </div>
+            }
+
+
         }
 
 
@@ -404,12 +369,12 @@
         {
             Console.WriteLine(quest.Display());
         }
-        Console.WriteLine("Diffrent print ");
-        var enumerator = mainQuest.GetEnumerator();
-        while (enumerator.MoveNext())
-        {
-            Console.WriteLine(enumerator.Current.Display());
-        }
+        //Console.WriteLine("Diffrent print ");
+        //var enumerator = mainQuest.GetEnumerator();
+        //while (enumerator.MoveNext())
+        //{
+        //    Console.WriteLine(enumerator.Current.Display());
+        //}
     }
 
     public void InvokePowerUp(Coordinates player)
