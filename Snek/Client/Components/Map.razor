@@ -205,7 +205,7 @@
             //Snek.Shared.Entities.PowerUp powerUp = new Snek.Shared.Entities.PowerUp("SpeedBoost");
             //powerUp.Name = "SpeedBoost";
             factory = new SpeedFactory();
-            //GlobalPower = factory.CreatePowerUp();
+            GlobalPower = factory.CreatePowerUp();
             _gameManager.powerUpControl.UsePowerUp(_gameManager.snake, GlobalPower);
             //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
         }
