@@ -15,9 +15,10 @@ namespace Snek.Shared.Board
 
         public override void Calculate(string image)
         {
-            if(image == "cherry.png" || image == "cherry2.png" || image == "pineapple.png" || image == "apple.png")
+            if(image == "cherry.png" || image == "cherry2.png" || image == "pineapple.png" || image == "apple.png" || image == "greenApple.png")
             {
-                PointSum += lifeCount; 
+                PointSum += lifeCount;
+                Next.Calculate(image);
             }
             else
             {
