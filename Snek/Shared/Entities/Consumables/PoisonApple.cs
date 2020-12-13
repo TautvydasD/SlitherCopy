@@ -8,10 +8,10 @@ namespace Snek.Shared.Entities.Consumables
         private int _lifeCount = 1;
         private string _image = "poisonedApple.png";
 
-        private Food _food;
+        //private Food _food;
         public PoisonApple(Food food) : base (food)
         {
-            this._food = food;
+            //this._food = food;
         }
 
         public override int LifeCount

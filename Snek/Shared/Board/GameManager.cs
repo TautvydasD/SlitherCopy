@@ -11,7 +11,7 @@ namespace Snek.Shared.Board
     public class GameManager
     {
         public event EventHandler MainLoopCompleted;
-        public Control powerUpControl = new Control();
+        public Control powerUpControl { get; set; }
 
         public bool IsRunning { get; private set; } = false;
 
@@ -87,6 +87,7 @@ namespace Snek.Shared.Board
             director = new SnakeDirector(new ConcreteSnakeBuilder());
             director.Construct(pos, posArr);
             snake = director.GetConstructedSnake();
+            powerUpControl = new Control(snake);
         }
     }
 }

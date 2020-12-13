@@ -12,8 +12,34 @@
             <h4>Highscore</h4>
         </div>
         <div>
-            Player 1: @Score
+            Player 1: @(!(counter is null) ? counter.GetSum() : 0)
         </div>
+        <div>
+            <h4>Quests</h4>
+        </div>
+        @if (counter is not null)
+        {
+            @foreach (Quest quest in mainQuest)
+            {
+                quest.Accept(new DisplayQuest());
+                quest.Accept(new CheckIsQuestCompleted(greenAppleCount, counter.GetSum(), _gameManager.snake.Body.posArr.Length + 1));
+                <div>
+                    @if (quest.IsCompleted)
+                    {
+                        <span style="color: #ff0000">@quest.Display</span>
+                    }
+                    else
+                    {
+                        <span style="color: #000000">@quest.Display</span>
+                    }
+
+                </div>
+            }
+
+
+        }
+
+
     </div>
 
     <div class="row margin-style" @onclick="_gameManager.StartGame" @onkeydown="@HandleKeyUp" tabindex="0" @ref="myDiv">
@@ -103,7 +129,7 @@
     public string[] fruits { get; set; } = { "apple.png", "cherry2.png", "pineapple.png",
                                              "rainbowApple.png", "spoiledApple2.png",
                                              "shrink.png", "cash.png"};
-
+    public int greenAppleCount { get; set; } = 0;
     public Factory factory = null;
     public PowerUp GlobalPower { get; set; } = null;
     public int fruitIndex { get; set; }
@@ -114,6 +140,13 @@
     public Coordinates powerUp { get; set; }
     GameManager _gameManager { get; set; }
     public Food bomb = null;
+    public PointCounter counter = null;
+
+    public CompositeQuest mainQuest = null;
+    public FoodQuest foodQuest = null;
+    public PointsQuest pointQuest = null;
+    public CompositeQuest sideQuest = null;
+    public LengthQuest lengthQuest = null;
 
     public string season = "winter";
     public IMap seasonMap = null;
@@ -127,12 +160,16 @@
     public Food apple = null;
     public AppleDecorator appleDecorator = null;
 
+
+
+
+
     protected ElementReference myDiv;  // set by the @ref attribute
 
     protected override void OnInitialized()
     {
         _gameManager = new GameManager();
-        _gameManager.snake.MoveRight();
+        //_gameManager.snake.MoveRight();
         Console.WriteLine("Awww, here we go again!");
         InitialiseMap();
         GenerateBomb();
@@ -140,14 +177,15 @@
         GenerateGlobalPowerUp();
         GenerateMapPowerUp();
         GenerateApple();
+        HandeQuests();
         _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
     }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         //Console.WriteLine($"Y:{food.Row}; X:{food.Column}");
-        DecreaseScore(_gameManager.snake.Head.pos, bomb);
-        AddScore(_gameManager.snake.Head.pos);
+        //DecreaseScore(_gameManager.snake.Head.pos, bomb);
+        CountScore(_gameManager.snake.Head.pos);
         InvokePowerUp(_gameManager.snake.Head.pos);
         if (firstRender)
             await JSRuntime.InvokeVoidAsync("SetFocusToElement", myDiv);
@@ -168,14 +206,14 @@
         {
             //Snek.Shared.Entities.PowerUp powerUp = new Snek.Shared.Entities.PowerUp("SpeedBoost");
             //powerUp.Name = "SpeedBoost";
-            factory = new SpeedFactory();
-            GlobalPower = factory.CreatePowerUp();
-            _gameManager.powerUpControl.UsePowerUp(_gameManager.snake, GlobalPower);
+            Factory factory2 = new SpeedFactory();
+            PowerUp speed = factory2.CreatePowerUp();
+            _gameManager.powerUpControl.UsePowerUp(_gameManager.snake, speed);
             //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
         }
         else if (e.Key == "r")
         {
-            _gameManager.powerUpControl.Discard(0);
+            _gameManager.powerUpControl.Undo(1);
             //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
         }
     }
@@ -269,21 +307,78 @@
             GenerateBomb();
         }
     }
-    public void AddScore(Coordinates player)
+    public void CountScore(Coordinates player)
     {
+        // Point Counter
+        PointCounter normalFood = new FoodPointCounter("food");
+        PointCounter poisonedFood = new PoisonFoodPointCounter("poison");
+        PointCounter specialFood = new SpecialFoodPointCounter("special");
+        PointCounter bombFood = new BombPointCounter("bomb");
+        PointCounter noFood = new NoFoodCounter("noPoints");
+
+
+        normalFood.SetNextChain(poisonedFood);
+        poisonedFood.SetNextChain(specialFood);
+        specialFood.SetNextChain(bombFood);
+        bombFood.SetNextChain(noFood);
+        noFood.SetNextChain(null);
+
+        counter = normalFood;
+
         if (player.Column == mapFruit.Position.Column && player.Row == mapFruit.Position.Row)
         {
+            counter.Calculate(mapFruit.Image);
             _gameManager.snake.Grow();
-            Score++;
+            //Score++;
+            Score = counter.GetSum();
             GenerateFood();
         }
         else if (player.Column == appleDecorator.Position.Column && player.Row == appleDecorator.Position.Row)
         {
+            if(appleDecorator.Image == "greenApple.png")
+            {
+                greenAppleCount++;
+            }
+            counter.Calculate(appleDecorator.Image);
             _gameManager.snake.Grow();
-            Score++;
+            //Score++;
+            Score = counter.GetSum();
             GenerateApple();
         }
+        else if (player.Column == bomb.Position.Column && player.Row == bomb.Position.Row)
+        {
+            //Score += bomb.LifeCount;
+            counter.Calculate(bomb.Image);
+            Score = counter.GetSum();
+            GenerateBomb();
+        }
     }
+
+    public void HandeQuests()
+    {
+        mainQuest = new CompositeQuest("mainQuest");
+        //mainQuest.Add(new PointsQuest("pointsQuest"));
+
+        sideQuest = new CompositeQuest("sideQuest");
+        sideQuest.Add(lengthQuest = new LengthQuest("Length Quest"));
+        sideQuest.Add(foodQuest = new FoodQuest("Food Quest"));
+
+        //sideQuest.Add(new FoodQuest("foodQuest"));
+        //sideQuest.Add(new LengthQuest("lengthQuest"));
+        mainQuest.Add(sideQuest);
+        mainQuest.Add(pointQuest = new PointsQuest("Point Quest"));
+        //foreach (Quest quest in mainQuest)
+        //{
+        //    Console.WriteLine(quest.Display());
+        //}
+        //Console.WriteLine("Diffrent print ");
+        //var enumerator = mainQuest.GetEnumerator();
+        //while (enumerator.MoveNext())
+        //{
+        //    Console.WriteLine(enumerator.Current.Display());
+        //}
+    }
+
     public void InvokePowerUp(Coordinates player)
     {
         if (player.Column == GlobalPower.Position.Column && player.Row == GlobalPower.Position.Row)
