@@ -16,10 +16,6 @@ namespace Snek.Shared.Classes
             _powerUp = powerUp;
             _snake = snake;
         }
-        public override void Discard()
-        {
-            _snake.DiscardPowerUp(_powerUp);
-        }
 
         public override void Use()
         {

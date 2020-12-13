@@ -167,7 +167,7 @@
     protected override void OnInitialized()
     {
         _gameManager = new GameManager();
-        _gameManager.snake.MoveRight();
+        //_gameManager.snake.MoveRight();
         Console.WriteLine("Awww, here we go again!");
         InitialiseMap();
         GenerateBomb();
@@ -204,14 +204,14 @@
         {
             //Snek.Shared.Entities.PowerUp powerUp = new Snek.Shared.Entities.PowerUp("SpeedBoost");
             //powerUp.Name = "SpeedBoost";
-            factory = new SpeedFactory();
-            GlobalPower = factory.CreatePowerUp();
-            _gameManager.powerUpControl.UsePowerUp(_gameManager.snake, GlobalPower);
+            Factory factory2 = new SpeedFactory();
+            PowerUp speed = factory2.CreatePowerUp();
+            _gameManager.powerUpControl.UsePowerUp(_gameManager.snake, speed);
             //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
         }
         else if (e.Key == "r")
         {
-            _gameManager.powerUpControl.Discard(0);
+            _gameManager.powerUpControl.Undo(1);
             //Console.WriteLine("Speed" + _gameManager.snake.SpeedBoost);
         }
     }
