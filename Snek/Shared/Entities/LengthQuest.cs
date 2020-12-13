@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Snek.Shared.Board;
 
 namespace Snek.Shared.Entities
 {
     public class LengthQuest : Quest
     {
-        private int _lengthForCompletion = 6; 
+        private int _lengthForCompletion = 6;
+        public int GetLengthForCompletion()
+        {
+            return _lengthForCompletion;
+        }
         public LengthQuest(string name) : base(name)
         {
 
@@ -21,7 +26,7 @@ namespace Snek.Shared.Entities
         {
             Console.WriteLine("Cannot remove from leaf quest");
         }
-        public override bool isCompleted(int progressFood, int progressPoints, int progressLength)
+        /*public override bool isCompleted(int progressFood, int progressPoints, int progressLength)
         {
             if(progressLength >= _lengthForCompletion)
             {
@@ -35,11 +40,15 @@ namespace Snek.Shared.Entities
         public override string Display()
         {
             return "   --Get snake to length : " + _lengthForCompletion;
-        }
+        }*/
 
         public override IEnumerator<Quest> GetEnumerator()
         {
             yield break;
+        }
+        public override void Accept(QuestVisitor questVisitor)
+        {
+            questVisitor.Visit(this);
         }
     }
 }

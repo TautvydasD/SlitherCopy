@@ -21,14 +21,16 @@
         {
             @foreach (Quest quest in mainQuest)
             {
+                quest.Accept(new DisplayQuest());
+                quest.Accept(new CheckIsQuestCompleted(greenAppleCount, counter.GetSum(), _gameManager.snake.Body.posArr.Length + 1));
                 <div>
-                    @if (quest.isCompleted(greenAppleCount, counter.GetSum(), _gameManager.snake.Body.posArr.Length + 1))
+                    @if (quest.IsCompleted)
                     {
-                        <span style="color: #ff0000">@quest.Display()</span>
+                        <span style="color: #ff0000">@quest.Display</span>
                     }
                     else
                     {
-                        <span style="color: #000000">@quest.Display()</span>
+                        <span style="color: #000000">@quest.Display</span>
                     }
 
                 </div>
@@ -365,10 +367,10 @@
         //sideQuest.Add(new LengthQuest("lengthQuest"));
         mainQuest.Add(sideQuest);
         mainQuest.Add(pointQuest = new PointsQuest("Point Quest"));
-        foreach (Quest quest in mainQuest)
-        {
-            Console.WriteLine(quest.Display());
-        }
+        //foreach (Quest quest in mainQuest)
+        //{
+        //    Console.WriteLine(quest.Display());
+        //}
         //Console.WriteLine("Diffrent print ");
         //var enumerator = mainQuest.GetEnumerator();
         //while (enumerator.MoveNext())

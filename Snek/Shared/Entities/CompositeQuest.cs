@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Snek.Shared.Board;
 
 namespace Snek.Shared.Entities
 {
     public class CompositeQuest : Quest
     {
-        private List<Quest> _children = new List<Quest>();
-
+        public List<Quest> _children = new List<Quest>();
         public CompositeQuest(string name) : base(name)
         {
 
@@ -23,7 +23,7 @@ namespace Snek.Shared.Entities
         {
             _children.Remove(quest);
         }
-        public override bool isCompleted(int progressFood, int progressPoints, int progressLength)
+        /*public override bool isCompleted(int progressFood, int progressPoints, int progressLength)
         {
             bool done = true;
             foreach(Quest quest in _children)
@@ -42,7 +42,7 @@ namespace Snek.Shared.Entities
             //    quest.Display();
             //}
             return "Quest " + Name + " : ";
-        }
+        }*/
 
         public override IEnumerator<Quest> GetEnumerator()
         {
@@ -60,6 +60,10 @@ namespace Snek.Shared.Entities
                     }
                 }
             }
+        }
+        public override void Accept(QuestVisitor questVisitor)
+        {
+            questVisitor.Visit(this);
         }
     }
 }
